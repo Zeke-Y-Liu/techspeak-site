@@ -60,6 +60,7 @@ const Prefs = {
 const TTS = {
   voices: [],
   _seq: 0,
+  _pool: [], /* utterance 保活池（见 speak 内注释） */
   init() {
     const load = () => {
       const all = window.speechSynthesis ? speechSynthesis.getVoices() : [];
@@ -104,7 +105,8 @@ const TTS = {
   /* Chrome 桌面网络语音约 15 秒后静默的已知 bug：定期 pause+resume 保活 */
   _keepalive() {
     const ua = navigator.userAgent;
-    if (!/Chrome/.test(ua) || /Edg|Mobile|Android/i.test(ua)) return () => { };
+    /* Chromium 桌面（Chrome/Edge）的网络语音同源同 bug；移动端 pause/resume 不可靠，跳过 */
+    if (!/(Chrome|Edg)\//.test(ua) || /Mobile|Android/i.test(ua)) return () => { };
     const iv = setInterval(() => {
       if (speechSynthesis.speaking && !speechSynthesis.paused) {
         speechSynthesis.pause(); speechSynthesis.resume();
@@ -115,7 +117,10 @@ const TTS = {
   speak(text, opts = {}) {
     if (!window.speechSynthesis) { toast('当前浏览器不支持语音合成', 'err'); return; }
     const seq = ++this._seq;
+    this._pool.length = 0; /* 上一会话的 utterance 已失效 */
     speechSynthesis.cancel();
+    /* Chrome 已知问题：cancel 后可能残留 paused 状态，后续 speak 完全无声，显式复位 */
+    try { speechSynthesis.resume(); } catch (e) { }
     /* 破折号→逗号、省略号→句号：部分语音包会把 — 读成 "dash"，
      * 替换后停顿自然。单 token 替换不改变词数，逐词高亮映射保持一致。 */
     const ttsText = String(text).replace(/—/g, ',').replace(/…/g, '.');
@@ -137,6 +142,8 @@ const TTS = {
       if (ci >= chunks.length) { finish(); return; }
       const ch = chunks[ci++];
       const u = new SpeechSynthesisUtterance(ch.text);
+      /* Chromium 已知 bug：utterance 被垃圾回收会导致朗读中途突然静音，池引用保活 */
+      this._pool.push(u);
       if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
       u.rate = rate;
       u.pitch = 1;
@@ -167,11 +174,14 @@ const TTS = {
       };
       u.onend = () => {
         clearInterval(estTimer);
+        this._pool = this._pool.filter(x => x !== u);
         if (done || !alive()) { stopKA(); return; }
-        setTimeout(speakChunk, 12); /* 块间 12ms 极短间隙，衔接自然 */
+        /* 块间 40ms：网络语音在上一块刚结束时立即发声会吞掉下一块首词 */
+        setTimeout(speakChunk, 40);
       };
       u.onerror = () => {
         clearInterval(estTimer);
+        this._pool = this._pool.filter(x => x !== u);
         if (done || !alive()) { stopKA(); return; }
         finish();
       };
@@ -180,7 +190,11 @@ const TTS = {
     /* cancel() 后立即 speak 偶发失效：留 50ms 让引擎复位 */
     setTimeout(speakChunk, 50);
   },
-  stop() { this._seq++; if (window.speechSynthesis) speechSynthesis.cancel(); }
+  stop() {
+    this._seq++;
+    this._pool.length = 0;
+    if (window.speechSynthesis) { speechSynthesis.cancel(); try { speechSynthesis.resume(); } catch (e) { } }
+  }
 };
 
 /* ================= 语音识别引擎 ================= */
