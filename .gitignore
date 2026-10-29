@@ -1,0 +1,9 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local caches / test output
+node_modules/
+*.log
+coverage/
