@@ -21,7 +21,7 @@ function fmtDate(ts) {
 function toast(msg, type = '') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<span>${type === 'ok' ? '✅' : type === 'err' ? '⚠️' : '💡'}</span><span>${esc(msg)}</span>`;
+  el.innerHTML = `<span>${esc(msg)}</span>`;
   $('#toast-root').appendChild(el);
   setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; setTimeout(() => el.remove(), 400); }, 2600);
 }
@@ -286,7 +286,7 @@ function mountPractice(ref) {
     s.words.forEach((raw, wi) => { readerHTML += `<span class="w" data-s="${si}" data-w="${wi}">${esc(raw)}</span> `; });
     readerHTML += '</span> ';
   });
-  const focusNote = ref.focus ? `<div class="notice info mt-14"><span class="ico">🎯</span><div><b>练习要点</b>：${esc(ref.focus)}</div></div>` : '';
+  const focusNote = ref.focus ? `<div class="notice info mt-14"><div><b>练习要点</b>：${esc(ref.focus)}</div></div>` : '';
   const wpmNote = ref.wpmTarget ? `<span class="tag gold">目标语速 ${ref.wpmTarget} wpm</span>` : '';
   $('#main').innerHTML = `
     <a class="back-link" href="${esc(ref.back)}">← 返回</a>
@@ -296,15 +296,15 @@ function mountPractice(ref) {
         <div class="meta"><span class="tag">${esc(ref.kind === 'article' ? '博客文章' : '句段练习')}</span><span>${esc(ref.subtitle)}</span>${wpmNote}</div>
       </div>
     </div>
-    ${!SRSupported ? '<div class="notice warn"><span class="ico">⚠️</span><div>当前浏览器不支持语音识别。<b>听读模式可用</b>，跟读与评分请使用 Chrome / Edge（通过 localhost 或 https 访问）。</div></div>' : ''}
+    ${!SRSupported ? '<div class="notice warn"><div>当前浏览器不支持语音识别。<b>听读模式可用</b>，跟读与评分请使用 Chrome / Edge（通过 localhost 或 https 访问）。</div></div>' : ''}
     ${focusNote}
     <div class="mode-tabs" id="mode-tabs">
-      <div class="mode-tab" data-mode="listen"><div class="t">🎧 听读模式</div><div class="d">听标准朗读，逐词高亮跟看</div></div>
-      <div class="mode-tab" data-mode="shadow"><div class="t">🎤 逐句跟读</div><div class="d">一句一听一读，即时词级反馈</div></div>
-      <div class="mode-tab" data-mode="fluency"><div class="t">📊 整段朗读评分</div><div class="d">完整朗读，输出多维评分报告</div></div>
+      <div class="mode-tab" data-mode="listen"><div class="t">听读模式</div><div class="d">听标准朗读，逐词高亮跟看</div></div>
+      <div class="mode-tab" data-mode="shadow"><div class="t">逐句跟读</div><div class="d">一句一听一读，即时词级反馈</div></div>
+      <div class="mode-tab" data-mode="fluency"><div class="t">整段朗读评分</div><div class="d">完整朗读，输出多维评分报告</div></div>
     </div>
     <div class="reader" id="reader">${readerHTML}</div>
-    <div class="text-muted text-sm mt-8">💡 点击任意单词：听发音、看释义、加入词汇本</div>
+    <div class="text-muted text-sm mt-8">点击任意单词：听发音、看释义、加入词汇本</div>
     <div id="control-zone"></div>
     <div id="result-zone"></div>`;
   $$('#mode-tabs .mode-tab').forEach(tab => tab.addEventListener('click', () => switchMode(tab.dataset.mode)));
@@ -360,11 +360,11 @@ function highlightWord(si, wi) {
 function renderListenControls() {
   $('#control-zone').innerHTML = `
     <div class="controls">
-      <button class="btn btn-primary" id="btn-play-all">▶ 播放整段</button>
-      <button class="btn" id="btn-play-one">🔊 播放当前句</button>
-      <button class="btn btn-sm" id="btn-prev">⏮</button>
+      <button class="btn btn-primary" id="btn-play-all">播放整段</button>
+      <button class="btn" id="btn-play-one">播放当前句</button>
+      <button class="btn btn-sm" id="btn-prev">上一句</button>
       <span class="tag grey" id="sent-indicator"></span>
-      <button class="btn btn-sm" id="btn-next">⏭</button>
+      <button class="btn btn-sm" id="btn-next">下一句</button>
       <div class="speed-ctl">语速 <input type="range" id="rate" min="0.5" max="1.2" step="0.05" value="${P.listen.rate}"><span class="val" id="rate-val">${P.listen.rate.toFixed(2)}x</span></div>
       <select id="voice-select" class="btn btn-sm" style="max-width:200px"></select>
     </div>
@@ -411,12 +411,12 @@ function renderShadowControls() {
   $('#control-zone').innerHTML = `
     <div class="sent-nav">${chips}</div>
     <div class="controls">
-      <button class="btn" id="btn-shadow-listen">🔊 听原句</button>
-      <button class="btn btn-rec" id="btn-shadow-rec">🎤 跟读本句</button>
-      <button class="btn" id="btn-shadow-next">下一句 ⏭</button>
+      <button class="btn" id="btn-shadow-listen">听原句</button>
+      <button class="btn btn-rec" id="btn-shadow-rec">跟读本句</button>
+      <button class="btn" id="btn-shadow-next">下一句</button>
       <div class="speed-ctl">语速 <input type="range" id="rate" min="0.5" max="1.2" step="0.05" value="${P.listen.rate}"><span class="val" id="rate-val">${P.listen.rate.toFixed(2)}x</span></div>
     </div>
-    <div class="transcript-box" id="transcript">点击 <b>🎤 跟读本句</b> 后朗读当前句子…</div>`;
+    <div class="transcript-box" id="transcript">点击 <b>跟读本句</b> 后朗读当前句子…</div>`;
   $$('.sent-chip').forEach(c => c.addEventListener('click', () => { P.sent = +c.dataset.si; clearWordMarks(); renderShadowControls(); }));
   $('#btn-shadow-listen').addEventListener('click', () => {
     TTS.speak(P.sentences[P.sent].text, { rate: P.listen.rate, onWord: wi => highlightWord(P.sent, wi) });
@@ -428,7 +428,7 @@ function renderShadowControls() {
 function startShadowRec() {
   if (P.shadow.rec && P.shadow.rec.state.active) { P.shadow.rec.stop(); return; }
   setCurrentSentence(P.sent);
-  const btn = $('#btn-shadow-rec'); btn.textContent = '⏹ 停止并评分'; btn.classList.remove('btn-rec');
+  const btn = $('#btn-shadow-rec'); btn.textContent = '停止并评分'; btn.classList.remove('btn-rec');
   $('#transcript').innerHTML = '<span class="live-dot"></span>正在聆听，请朗读当前句子…';
   const sentWords = P.W.filter(x => x.s === P.sent).map(x => x.raw);
   const targetTokens = prepareTokens(sentWords);
@@ -443,11 +443,11 @@ function startShadowRec() {
       const sc = scoreAttempt(targetTokens, recTokens, st);
       P.shadow.scores[P.sent] = sc.overall;
       colorSentenceFromOps(P.sent, sc.ops);
-      $('#transcript').innerHTML = st.finalText ? `🗣️ ${esc(st.finalText)}` : '未识别到语音，请再试一次。';
+      $('#transcript').innerHTML = st.finalText ? `${esc(st.finalText)}` : '未识别到语音，请再试一次。';
       $('#result-zone').innerHTML = `
         <div class="card score-panel mt-20">
           <div class="flex-between"><b>第 ${P.sent + 1} 句 · 跟读评分</b>
-          <button class="btn btn-sm" id="btn-shadow-retry">🔁 再读一遍</button></div>
+          <button class="btn btn-sm" id="btn-shadow-retry">再读一遍</button></div>
           <div class="score-hero mt-14">${ringHTML(sc.overall)}
             <div class="dim-grid">
               ${dimHTML('准确率', sc.accuracy)}${dimHTML('清晰度', sc.clarity)}
@@ -468,7 +468,7 @@ function startShadowRec() {
   });
   if (P.shadow.rec) P.shadow.rec.start();
 }
-function resetShadowBtn() { const btn = $('#btn-shadow-rec'); if (btn) { btn.textContent = '🎤 跟读本句'; btn.classList.add('btn-rec'); } }
+function resetShadowBtn() { const btn = $('#btn-shadow-rec'); if (btn) { btn.textContent = '跟读本句'; btn.classList.add('btn-rec'); } }
 function renderShadowChipsBadges() {
   const chips = P.sentences.map((s, i) => {
     const sc = P.shadow.scores[i];
@@ -483,10 +483,10 @@ function renderShadowChipsBadges() {
 function renderFluencyControls() {
   $('#control-zone').innerHTML = `
     <div class="controls">
-      <button class="btn btn-rec btn-lg" id="btn-flu-rec">🎤 开始整段朗读</button>
+      <button class="btn btn-rec btn-lg" id="btn-flu-rec">开始整段朗读</button>
       <button class="btn" id="btn-flu-clear">清除标记</button>
     </div>
-    <div class="transcript-box" id="transcript">点击 <b>🎤 开始整段朗读</b>，一口气读完整段文字，系统将评估你的准确率、语速与停顿…</div>`;
+    <div class="transcript-box" id="transcript">点击 <b>开始整段朗读</b>，一口气读完整段文字，系统将评估你的准确率、语速与停顿…</div>`;
   $('#btn-flu-rec').addEventListener('click', startFluencyRec);
   $('#btn-flu-clear').addEventListener('click', () => { clearWordMarks(); $('#result-zone').innerHTML = ''; });
 }
@@ -494,7 +494,7 @@ async function startFluencyRec() {
   if (P.fluency.recording) { P.fluency.recording = false; try { P.fluency.rec.stop(); } catch (e) { } return; }
   clearWordMarks(); clearSpeaking();
   P.fluency.recording = true; P.cancelled = false;
-  const btn = $('#btn-flu-rec'); btn.textContent = '⏹ 停止并评分'; btn.classList.remove('btn-rec');
+  const btn = $('#btn-flu-rec'); btn.textContent = '停止并评分'; btn.classList.remove('btn-rec');
   $('#transcript').innerHTML = '<span class="live-dot"></span>正在聆听，请完整朗读整段文字…';
   const targetTokens = prepareTokens(P.W.map(x => x.raw));
   P.cancelled = false;
@@ -512,11 +512,11 @@ async function startFluencyRec() {
       const recTokens = prepareTokens(splitWords(st.finalText));
       const sc = scoreAttempt(targetTokens, recTokens, st);
       colorSentenceFromOps(-1, sc.ops);
-      $('#transcript').innerHTML = st.finalText ? `🗣️ ${esc(st.finalText)}` : '未识别到语音，请再试一次。';
+      $('#transcript').innerHTML = st.finalText ? `${esc(st.finalText)}` : '未识别到语音，请再试一次。';
       $('#result-zone').innerHTML = `
         <div class="card score-panel mt-20">
           <div class="flex-between"><b>整段朗读 · 评分报告</b>
-            <div class="flex gap-8"><button class="btn btn-sm" id="btn-flu-retry">🔁 再来一次</button></div></div>
+            <div class="flex gap-8"><button class="btn btn-sm" id="btn-flu-retry">再来一次</button></div></div>
           <div class="score-hero mt-14">${ringHTML(sc.overall)}
             <div class="dim-grid">
               ${dimHTML('准确率', sc.accuracy)}${dimHTML('清晰度', sc.clarity)}
@@ -528,7 +528,7 @@ async function startFluencyRec() {
             <div class="stat-item"><b>${sc.durationSec}s</b><span>朗读用时</span></div>
             <div class="stat-item"><b>${sc.hit}/${sc.targetCount}</b><span>命中词数</span></div>
           </div>
-          ${audioURL ? `<audio class="player" controls src="${audioURL}"></audio><div class="text-muted text-sm">🔊 回听自己的录音，对比标准语音找差距</div>` : ''}
+          ${audioURL ? `<audio class="player" controls src="${audioURL}"></audio><div class="text-muted text-sm">回听自己的录音，对比标准语音找差距</div>` : ''}
           <div class="suggestions">${suggestionsHTML(sc)}</div>
         </div>`;
       $('#btn-flu-retry').addEventListener('click', startFluencyRec);
@@ -539,7 +539,7 @@ async function startFluencyRec() {
   P.fluency.recorder = await startVoiceRecording();
   P.fluency.rec.start();
 }
-function resetFluBtn() { const btn = $('#btn-flu-rec'); if (btn) { btn.textContent = '🎤 开始整段朗读'; btn.classList.add('btn-rec'); } }
+function resetFluBtn() { const btn = $('#btn-flu-rec'); if (btn) { btn.textContent = '开始整段朗读'; btn.classList.add('btn-rec'); } }
 
 function colorSentenceFromOps(si, ops) {
   ops.forEach(o => {
@@ -570,18 +570,18 @@ function dimHTML(label, val) {
 }
 function suggestionsHTML(sc) {
   const out = [];
-  if (sc.empty) { out.push(`<div class="suggestion"><span class="ico">🔇</span><div>没有识别到语音。请检查麦克风权限，或靠近麦克风再试一次。</div></div>`); return out.join(''); }
-  if (sc.overall >= 85) out.push(`<div class="suggestion"><span class="ico">🎉</span><div><b>出色的表现！</b>继续保持这个节奏，可以挑战更高难度的 Advanced 素材。</div></div>`);
+  if (sc.empty) { out.push(`<div class="suggestion"><div>没有识别到语音。请检查麦克风权限，或靠近麦克风再试一次。</div></div>`); return out.join(''); }
+  if (sc.overall >= 85) out.push(`<div class="suggestion"><div><b>出色的表现！</b>继续保持这个节奏，可以挑战更高难度的 Advanced 素材。</div></div>`);
   if (sc.closeWords.length) {
     const words = sc.closeWords.slice(0, 6).map(w => `<span class="clickable" data-say="${esc(w.raw)}">${esc(w.raw)}</span>`).join('、');
-    out.push(`<div class="suggestion"><span class="ico">💡</span><div>以下单词可能发音不够准（听成 <i>${esc(sc.closeWords.slice(0, 3).map(w => w.heard).join(', '))}</i>…）：${words}。点击单词听标准发音，跟读 3 遍。</div></div>`);
+    out.push(`<div class="suggestion"><div>以下单词可能发音不够准（听成 <i>${esc(sc.closeWords.slice(0, 3).map(w => w.heard).join(', '))}</i>…）：${words}。点击单词听标准发音，跟读 3 遍。</div></div>`);
   }
-  if (sc.missCount > 0) out.push(`<div class="suggestion"><span class="ico">❌</span><div>有 <b>${sc.missCount}</b> 个词未读出（红色下划线标记），注意不要吞词、跳词。</div></div>`);
-  if (sc.wpm > 0 && sc.wpm < 95) out.push(`<div class="suggestion"><span class="ico">🐢</span><div>语速 <b>${sc.wpm} wpm</b> 偏慢。演讲语速建议 110–150 wpm，试着按意群连读，减少词间停顿。</div></div>`);
-  if (sc.wpm > 170) out.push(`<div class="suggestion"><span class="ico">🐇</span><div>语速 <b>${sc.wpm} wpm</b> 偏快。在关键数据和术语前刻意停顿，给听众吸收时间。</div></div>`);
-  if (sc.accuracy < 0.7 && sc.closeWords.length + sc.missCount > 3) out.push(`<div class="suggestion"><span class="ico">🎧</span><div>准确率偏低：建议先回到<b>听读模式</b>用 0.7x 语速精听，再切到<b>逐句跟读</b>逐个攻克。</div></div>`);
-  if (sc.pauses >= 4 && sc.durationSec > 8) out.push(`<div class="suggestion"><span class="ico">⏸️</span><div>停顿较频繁（${sc.pauses} 次）。练习"意群朗读"：一口气读完一个短语，只在逗号和句号处换气。</div></div>`);
-  if (!out.length) out.push(`<div class="suggestion"><span class="ico">👍</span><div>整体不错！可再练一遍冲击更高分，或进入下一篇素材。</div></div>`);
+  if (sc.missCount > 0) out.push(`<div class="suggestion"><div>有 <b>${sc.missCount}</b> 个词未读出（红色下划线标记），注意不要吞词、跳词。</div></div>`);
+  if (sc.wpm > 0 && sc.wpm < 95) out.push(`<div class="suggestion"><div>语速 <b>${sc.wpm} wpm</b> 偏慢。演讲语速建议 110–150 wpm，试着按意群连读，减少词间停顿。</div></div>`);
+  if (sc.wpm > 170) out.push(`<div class="suggestion"><div>语速 <b>${sc.wpm} wpm</b> 偏快。在关键数据和术语前刻意停顿，给听众吸收时间。</div></div>`);
+  if (sc.accuracy < 0.7 && sc.closeWords.length + sc.missCount > 3) out.push(`<div class="suggestion"><div>准确率偏低：建议先回到<b>听读模式</b>用 0.7x 语速精听，再切到<b>逐句跟读</b>逐个攻克。</div></div>`);
+  if (sc.pauses >= 4 && sc.durationSec > 8) out.push(`<div class="suggestion"><div>停顿较频繁（${sc.pauses} 次）。练习"意群朗读"：一口气读完一个短语，只在逗号和句号处换气。</div></div>`);
+  if (!out.length) out.push(`<div class="suggestion"><div>整体不错！可再练一遍冲击更高分，或进入下一篇素材。</div></div>`);
   return out.join('');
 }
 document.addEventListener('click', e => {
@@ -612,7 +612,7 @@ function openWordModal(word, context) {
     <div class="chip-row mb-14"><span class="tag teal">${esc(g.cat)}</span><span class="tag grey">${esc(g.ipa)}</span></div>
     <div style="font-size:15px">${esc(g.zh)}</div>
     <div class="text-muted text-sm mt-8" style="font-style:italic">${esc(g.def)}</div>
-    <div class="ex mt-14" style="background:var(--bg-soft);padding:10px 14px;border-radius:9px;border-left:3px solid var(--accent);font-size:13.5px">💬 ${esc(g.example)}</div>` : '';
+    <div class="ex mt-14" style="background:var(--bg-soft);padding:10px 14px;border-radius:9px;border-left:3px solid var(--accent);font-size:13.5px">${esc(g.example)}</div>` : '';
   $('#modal-root').innerHTML = `
     <div class="modal-mask" id="word-modal">
       <div class="modal-box">
@@ -622,12 +622,12 @@ function openWordModal(word, context) {
         </div>
         ${g ? `<div class="text-muted" style="font-family:var(--mono);font-size:14px">${esc(g.ipa)}</div>` : ''}
         <div class="flex gap-8 mt-14">
-          <button class="btn" id="btn-word-say">🔊 听发音</button>
-          <button class="btn btn-primary" id="btn-word-add" ${inVocab ? 'disabled' : ''}>${inVocab ? '✓ 已在词汇本' : '➕ 加入词汇本'}</button>
+          <button class="btn" id="btn-word-say">听发音</button>
+          <button class="btn btn-primary" id="btn-word-add" ${inVocab ? 'disabled' : ''}>${inVocab ? '✓ 已在词汇本' : '加入词汇本'}</button>
         </div>
         ${glossaryBlock}
         ${context ? `<div class="mt-14"><div class="text-muted text-sm">遇到的语境：</div><div class="text-sm mt-8" style="font-style:italic;border-left:2px solid var(--border);padding-left:10px">${esc(context)}</div></div>` : ''}
-        ${g ? `<div class="divider"></div><b class="text-sm">🎤 练习术语例句</b><div class="mini-practice mt-8" data-text="${esc(g.example)}"></div>` : ''}
+        ${g ? `<div class="divider"></div><b class="text-sm">练习术语例句</b><div class="mini-practice mt-8" data-text="${esc(g.example)}"></div>` : ''}
       </div>
     </div>`;
   $('#modal-x').addEventListener('click', closeModal);
@@ -649,8 +649,8 @@ function mountMiniPractice(box) {
   const g = lookupGlossary(splitWords(text), 0);
   box.innerHTML = `
     <div class="flex gap-8 flex-wrap">
-      <button class="btn btn-sm">🔊 听</button>
-      <button class="btn btn-sm btn-rec">🎤 跟读评分</button>
+      <button class="btn btn-sm">听</button>
+      <button class="btn btn-sm btn-rec">跟读评分</button>
     </div>
     <div class="mini-result"></div>`;
   const [listenBtn, recBtn] = $$('button', box);
@@ -658,15 +658,15 @@ function mountMiniPractice(box) {
   listenBtn.addEventListener('click', () => TTS.speak(text, { rate: 0.9 }));
   recBtn.addEventListener('click', () => {
     if (recBtn.dataset.active === '1') { box.rec.stop(); return; }
-    recBtn.dataset.active = '1'; recBtn.textContent = '⏹ 停止'; recBtn.classList.remove('btn-rec');
+    recBtn.dataset.active = '1'; recBtn.textContent = '停止'; recBtn.classList.remove('btn-rec');
     const targetTokens = prepareTokens(splitWords(text));
     const refTitle = box.dataset.title || text.slice(0, 30);
     const refType = box.dataset.type || 'pattern';
     box.rec = createRecognizer({
       onUpdate: txt => { result.innerHTML = `<div class="text-muted text-sm" style="font-style:italic"><span class="live-dot"></span>${esc(txt)}</div>`; },
-      onFatal: msg => { toast(msg, 'err'); recBtn.dataset.active = ''; recBtn.textContent = '🎤 跟读评分'; recBtn.classList.add('btn-rec'); },
+      onFatal: msg => { toast(msg, 'err'); recBtn.dataset.active = ''; recBtn.textContent = '跟读评分'; recBtn.classList.add('btn-rec'); },
       onDone: st => {
-        recBtn.dataset.active = ''; recBtn.textContent = '🎤 跟读评分'; recBtn.classList.add('btn-rec');
+        recBtn.dataset.active = ''; recBtn.textContent = '跟读评分'; recBtn.classList.add('btn-rec');
         const recTokens = prepareTokens(splitWords(st.finalText));
         const sc = scoreAttempt(targetTokens, recTokens, st);
         const cls = sc.overall >= 80 ? 'sp-good' : sc.overall >= 60 ? 'sp-mid' : 'sp-bad';
@@ -682,12 +682,12 @@ function mountMiniPractice(box) {
             <span class="text-muted text-sm">准确 ${Math.round(sc.accuracy * 100)} · 流畅 ${Math.round(sc.fluency * 100)} · ${sc.wpm} wpm</span>
           </div>
           <div class="mt-8 text-sm" style="line-height:1.9">${colored}</div>
-          ${sc.closeWords.length ? `<div class="text-muted text-sm mt-8">💡 发音可再打磨：${sc.closeWords.slice(0, 5).map(w => `<span class="clickable" data-say="${esc(w.raw)}" style="cursor:pointer;font-weight:700">${esc(w.raw)}</span>`).join('、')}（点击可听）</div>` : ''}`;
+          ${sc.closeWords.length ? `<div class="text-muted text-sm mt-8">发音可再打磨：${sc.closeWords.slice(0, 5).map(w => `<span class="clickable" data-say="${esc(w.raw)}" style="cursor:pointer;font-weight:700">${esc(w.raw)}</span>`).join('、')}（点击可听）</div>` : ''}`;
         bindSays(result);
         HistoryStore.add({ refType, refTitle, mode: 'mini', overall: sc.overall, accuracy: sc.accuracy, fluency: sc.fluency, clarity: sc.clarity, completeness: sc.completeness, wpm: sc.wpm, durationSec: sc.durationSec });
       }
     });
-    if (box.rec) box.rec.start(); else { recBtn.dataset.active = ''; recBtn.textContent = '🎤 跟读评分'; }
+    if (box.rec) box.rec.start(); else { recBtn.dataset.active = ''; recBtn.textContent = '跟读评分'; }
   });
 }
 function bindSays(root) {
@@ -724,13 +724,13 @@ function viewHome() {
   PARAGRAPHS.forEach(p => allRefs.push(libParaRef(p)));
   const pick = allRefs[new Date().getDate() % allRefs.length];
   $('#main').innerHTML = `
-    ${!SRSupported ? '<div class="notice warn"><span class="ico">⚠️</span><div>当前浏览器不支持<b>语音识别</b>（跟读/评分需要）。请使用 <b>Chrome / Edge</b>，并通过 <b>localhost 或 https</b> 访问本站。听读与浏览功能不受影响。</div></div>' : ''}
+    ${!SRSupported ? '<div class="notice warn"><div>当前浏览器不支持<b>语音识别</b>（跟读/评分需要）。请使用 <b>Chrome / Edge</b>，并通过 <b>localhost 或 https</b> 访问本站。听读与浏览功能不受影响。</div></div>' : ''}
     <div class="card hero">
       <h1>把世界级的技术博客，<br>变成你的<span class="grad">英语演讲练习台</span></h1>
       <p>精选 Anthropic、Google DeepMind、Google Cloud 官方博客的真实素材 —— 听标准朗读、逐句跟读、整段演讲评分，配套 AI/Infra 术语、句型与专属词汇本。</p>
       <div class="cta-row">
-        <button class="btn btn-primary btn-lg" onclick="location.hash='#/library'">📚 进入文章库</button>
-        <button class="btn btn-lg" onclick="location.hash='#/paragraphs'">📝 句段速练</button>
+        <button class="btn btn-primary btn-lg" onclick="location.hash='#/library'">进入文章库</button>
+        <button class="btn btn-lg" onclick="location.hash='#/paragraphs'">句段速练</button>
       </div>
       <div class="src-row">
         <span class="tag">Anthropic</span><span class="tag teal">Google DeepMind</span><span class="tag gold">Google Cloud Infra</span>
@@ -754,10 +754,10 @@ function viewHome() {
     </div>
     <div class="section-title">核心能力 <span class="line"></span></div>
     <div class="grid grid-4">
-      <div class="card feature-card" onclick="location.hash='#/library'"><div class="fico">🎧</div><h3>听读 · 跟读</h3><p>逐词高亮的标准朗读，可调语速；逐句跟读即时词级反馈。</p></div>
-      <div class="card feature-card" onclick="location.hash='#/library'"><div class="fico">📊</div><h3>多维评分</h3><p>准确率 / 清晰度 / 完整度 / 流畅度四维打分，语速与停顿分析。</p></div>
-      <div class="card feature-card" onclick="location.hash='#/glossary'"><div class="fico">🧠</div><h3>AI / Infra 术语</h3><p>56+ 领域专属术语：发音、释义、真实例句、跟读练习。</p></div>
-      <div class="card feature-card" onclick="location.hash='#/vocab'"><div class="fico">📖</div><h3>词汇本</h3><p>练习中一键收藏生词，附原始语境，内置翻卡复习模式。</p></div>
+      <div class="card feature-card" onclick="location.hash='#/library'"><h3>听读 · 跟读</h3><p>逐词高亮的标准朗读，可调语速；逐句跟读即时词级反馈。</p></div>
+      <div class="card feature-card" onclick="location.hash='#/library'"><h3>多维评分</h3><p>准确率 / 清晰度 / 完整度 / 流畅度四维打分，语速与停顿分析。</p></div>
+      <div class="card feature-card" onclick="location.hash='#/glossary'"><h3>AI / Infra 术语</h3><p>56+ 领域专属术语：发音、释义、真实例句、跟读练习。</p></div>
+      <div class="card feature-card" onclick="location.hash='#/vocab'"><h3>词汇本</h3><p>练习中一键收藏生词，附原始语境，内置翻卡复习模式。</p></div>
     </div>`;
 }
 
@@ -783,7 +783,7 @@ function viewLibrary() {
       <a class="link-quiet text-sm" href="${esc(a.url)}" target="_blank" rel="noopener">查看原文 ↗</a>
     </div>`).join('');
   $('#main').innerHTML = `
-    <div class="page-head"><h1>📚 文章库</h1><div class="sub">节选自 Anthropic / Google DeepMind / Google Cloud 官方博客的真实段落。每段可进行听读、逐句跟读、整段朗读评分三种练习。</div></div>
+    <div class="page-head"><h1>文章库</h1><div class="sub">节选自 Anthropic / Google DeepMind / Google Cloud 官方博客的真实段落。每段可进行听读、逐句跟读、整段朗读评分三种练习。</div></div>
     <div class="grid">${cards}</div>`;
 }
 
@@ -808,7 +808,7 @@ function viewArticle(aid) {
 }
 
 function viewNotFound() {
-  $('#main').innerHTML = `<div class="empty"><div class="e-ico">🤔</div>页面不存在，<a href="#/">返回首页</a></div>`;
+  $('#main').innerHTML = `<div class="empty">页面不存在，<a href="#/">返回首页</a></div>`;
 }
 
 function viewGlossary() {
@@ -824,13 +824,13 @@ function viewGlossary() {
         </div>
         <div class="zh">${esc(g.zh)}</div>
         <div class="def">${esc(g.def)}</div>
-        <div class="ex">💬 ${esc(g.example)}</div>
+        <div class="ex">${esc(g.example)}</div>
         <div class="actions">
-          <button class="btn btn-sm" data-say="${esc(g.term)}">🔊 发音</button>
-          <button class="btn btn-sm btn-primary" data-practice="${esc(g.term)}">🎤 练习</button>
-          <button class="btn btn-sm" data-add="${esc(g.term)}">${VocabStore.has(g.term) ? '✓ 已收藏' : '➕ 词汇本'}</button>
+          <button class="btn btn-sm" data-say="${esc(g.term)}">发音</button>
+          <button class="btn btn-sm btn-primary" data-practice="${esc(g.term)}">练习</button>
+          <button class="btn btn-sm" data-add="${esc(g.term)}">${VocabStore.has(g.term) ? '✓ 已收藏' : '词汇本'}</button>
         </div>
-      </div>`).join('') || '<div class="empty" style="grid-column:1/-1"><div class="e-ico">🔍</div>没有匹配的术语</div>';
+      </div>`).join('') || '<div class="empty" style="grid-column:1/-1">没有匹配的术语</div>';
     bindSays($('#glossary-grid'));
     $$('[data-add]', $('#glossary-grid')).forEach(b => b.addEventListener('click', () => {
       const g = GLOSSARY.find(x => x.term === b.dataset.add);
@@ -844,9 +844,9 @@ function viewGlossary() {
     }));
   };
   $('#main').innerHTML = `
-    <div class="page-head"><h1>🧠 AI / Infra 术语库</h1><div class="sub">${GLOSSARY.length} 个技术与商业高频术语：音标、中文释义、英文定义与真实语境例句。点击术语听发音，或进行例句跟读练习。</div></div>
+    <div class="page-head"><h1>AI / Infra 术语库</h1><div class="sub">${GLOSSARY.length} 个技术与商业高频术语：音标、中文释义、英文定义与真实语境例句。点击术语听发音，或进行例句跟读练习。</div></div>
     <div class="flex gap-12 mb-14" style="align-items:center">
-      <div class="search-box" style="flex:1;max-width:380px"><span class="ico">🔍</span><input id="g-search" placeholder="搜索术语 / 中文释义…"></div>
+      <div class="search-box" style="flex:1;max-width:380px"><input id="g-search" placeholder="搜索术语 / 中文释义…"></div>
       <div class="chip-row" id="g-cats">${cats.map((c, i) => `<span class="chip ${i === 0 ? 'active' : ''}" data-cat="${esc(c)}">${esc(c)}</span>`).join('')}</div>
     </div>
     <div class="glossary-grid" id="glossary-grid"></div>`;
@@ -873,18 +873,18 @@ function viewPatterns() {
               <div class="zh">${esc(ex.zh)}</div>
               <div class="mini-practice mt-8" data-text="${esc(ex.en)}" data-title="${esc(p.name)}" data-type="pattern"></div>
             </div>`).join('')}
-          <div class="pattern-note"><span class="ico">📌</span><span>${esc(p.note)}</span></div>
+          <div class="pattern-note"><span>${esc(p.note)}</span></div>
         </div>`).join('')}
     </div>`).join('');
   $('#main').innerHTML = `
-    <div class="page-head"><h1>🔗 演讲句型库</h1><div class="sub">技术与商业演讲的 ${PATTERNS.reduce((s, c) => s + c.items.length, 0)} 个高频句型：开场、发布、架构、指标、权衡、规模、商业价值、收尾与 Q&A。每个例句都可以跟读评分。</div></div>
+    <div class="page-head"><h1>演讲句型库</h1><div class="sub">技术与商业演讲的 ${PATTERNS.reduce((s, c) => s + c.items.length, 0)} 个高频句型：开场、发布、架构、指标、权衡、规模、商业价值、收尾与 Q&A。每个例句都可以跟读评分。</div></div>
     ${html}`;
   $$('.mini-practice').forEach(mountMiniPractice);
 }
 
 function viewParagraphs() {
   $('#main').innerHTML = `
-    <div class="page-head"><h1>📝 句段库 · 整段朗读</h1><div class="sub">按主题精选的 50–90 词练习段，来自三大博客的真实表述。每段附练习要点（重音、连读、数字读法）与目标语速，适合流畅性打磨。</div></div>
+    <div class="page-head"><h1>句段库 · 整段朗读</h1><div class="sub">按主题精选的 50–90 词练习段，来自三大博客的真实表述。每段附练习要点（重音、连读、数字读法）与目标语速，适合流畅性打磨。</div></div>
     <div class="grid grid-2">
       ${PARAGRAPHS.map(p => `
         <div class="card">
@@ -894,7 +894,7 @@ function viewParagraphs() {
           </div>
           <div class="text-muted text-sm mt-8">${esc(p.sourceNote)} · 目标 <b>${p.wpmTarget} wpm</b> · ${splitWords(p.text).length} 词</div>
           <div class="mt-14 text-sm" style="line-height:1.9;color:var(--muted)">${esc(p.text.slice(0, 150))}…</div>
-          <div class="notice info mt-14" style="margin-bottom:0"><span class="ico">🎯</span><div>${esc(p.focus)}</div></div>
+          <div class="notice info mt-14" style="margin-bottom:0"><div>${esc(p.focus)}</div></div>
           <button class="btn btn-primary mt-14" onclick="location.hash='#/ppractice/${p.id}'">进入练习 →</button>
         </div>`).join('')}
     </div>`;
@@ -916,11 +916,11 @@ function viewVocab() {
           <div class="vsrc">来源：${esc(v.source || '')} · ${fmtDate(v.addedAt)} · 复习 ${v.reviews || 0} 次</div>
         </div>
         <div class="vactions">
-          <button class="btn btn-sm" data-say="${esc(v.word)}">🔊</button>
-          <button class="btn btn-sm" data-master="${esc(v.word)}">${v.status === 'mastered' ? '↩︎ 取消掌握' : '✓ 已掌握'}</button>
+          <button class="btn btn-sm" data-say="${esc(v.word)}">发音</button>
+          <button class="btn btn-sm" data-master="${esc(v.word)}">${v.status === 'mastered' ? '取消掌握' : '✓ 已掌握'}</button>
           <button class="btn btn-sm btn-danger" data-del="${esc(v.word)}">删除</button>
         </div>
-      </div>`).join('') || '<div class="empty" style="grid-column:1/-1"><div class="e-ico">📖</div>词汇本还是空的 —— 在练习中点击生词即可加入</div>';
+      </div>`).join('') || '<div class="empty" style="grid-column:1/-1">词汇本还是空的 —— 在练习中点击生词即可加入</div>';
     bindSays($('#vocab-list'));
     $$('[data-master]', $('#vocab-list')).forEach(b => b.addEventListener('click', () => {
       const v = VocabStore.all().find(x => x.word === b.dataset.master);
@@ -931,18 +931,18 @@ function viewVocab() {
   };
   const all = VocabStore.all();
   $('#main').innerHTML = `
-    <div class="page-head"><h1>📖 词汇本</h1><div class="sub">练习中点击生词即可收藏（含原始语境）。进入翻卡复习模式，巩固记忆。</div></div>
+    <div class="page-head"><h1>词汇本</h1><div class="sub">练习中点击生词即可收藏（含原始语境）。进入翻卡复习模式，巩固记忆。</div></div>
     <div class="grid grid-4 mb-14">
       <div class="card stat-card"><div class="k">总词数</div><div class="v">${all.length}</div></div>
       <div class="card stat-card"><div class="k">学习中</div><div class="v">${all.filter(v => v.status !== 'mastered').length}</div></div>
       <div class="card stat-card"><div class="k">已掌握</div><div class="v">${all.filter(v => v.status === 'mastered').length}</div></div>
       <div class="card" style="display:flex;align-items:center;gap:10px">
-        <button class="btn btn-primary" id="btn-flash">🎴 翻卡复习</button>
-        <button class="btn" id="btn-export">⬇ 导出</button>
+        <button class="btn btn-primary" id="btn-flash">翻卡复习</button>
+        <button class="btn" id="btn-export">导出</button>
       </div>
     </div>
     <div class="flex gap-12 mb-14" style="align-items:center">
-      <div class="search-box" style="flex:1;max-width:340px"><span class="ico">🔍</span><input id="v-search" placeholder="搜索单词…"></div>
+      <div class="search-box" style="flex:1;max-width:340px"><input id="v-search" placeholder="搜索单词…"></div>
       <div class="chip-row" id="v-filters">
         <span class="chip active" data-f="all">全部</span>
         <span class="chip" data-f="learning">学习中</span>
@@ -983,14 +983,14 @@ function startFlashcards() {
           <div class="card flash-card" id="flash-card">
             <div class="flash-word">${esc(v.word)}</div>
             ${v.ipa ? `<div class="flash-ipa">${esc(v.ipa)}</div>` : ''}
-            <button class="btn btn-sm" data-say="${esc(v.word)}">🔊 听发音</button>
+            <button class="btn btn-sm" data-say="${esc(v.word)}">听发音</button>
             ${flipped ? `
               <div class="flash-answer">
                 <div class="zh">${esc(v.zh || '（暂无释义）')}</div>
                 ${v.context ? `<div class="ctx">"${esc(v.context)}"</div>` : ''}
                 <div class="flex gap-8 mt-14" style="justify-content:center">
-                  <button class="btn btn-primary" id="flash-good">😌 已掌握</button>
-                  <button class="btn" id="flash-again">🤔 继续练</button>
+                  <button class="btn btn-primary" id="flash-good">已掌握</button>
+                  <button class="btn" id="flash-again">继续练</button>
                 </div>
               </div>` : `<div class="text-muted text-sm">点击卡片查看释义</div>`}
           </div>
@@ -1034,7 +1034,7 @@ function viewHistory() {
   const chart = trend.length > 1 ? trendSVG(trend.map(r => r.overall)) : '';
   const modeName = { shadow: '逐句跟读', fluency: '整段朗读', mini: '句型/术语' };
   $('#main').innerHTML = `
-    <div class="page-head"><h1>📈 练习记录</h1><div class="sub">所有跟读与朗读评分的历史记录与趋势。数据保存在本地浏览器中。</div></div>
+    <div class="page-head"><h1>练习记录</h1><div class="sub">所有跟读与朗读评分的历史记录与趋势。数据保存在本地浏览器中。</div></div>
     <div class="grid grid-4 mb-14">
       <div class="card stat-card"><div class="k">练习次数</div><div class="v">${recs.length}</div></div>
       <div class="card stat-card"><div class="k">平均总分</div><div class="v">${avg || '—'}</div></div>
@@ -1053,7 +1053,7 @@ function viewHistory() {
             <td>${Math.round((r.accuracy || 0) * 100)}</td><td>${Math.round((r.fluency || 0) * 100)}</td>
             <td>${r.wpm || '—'}</td><td class="text-muted">${r.durationSec || 0}s</td>
           </tr>`).join('')}
-      </table></div>` : '<div class="empty"><div class="e-ico">📉</div>还没有练习记录，去文章库开始第一次跟读吧</div>'}
+      </table></div>` : '<div class="empty">还没有练习记录，去文章库开始第一次跟读吧</div>'}
     </div>`;
   const clearBtn = $('#btn-clear');
   if (clearBtn) clearBtn.addEventListener('click', () => {
@@ -1069,25 +1069,24 @@ function trendSVG(scores) {
   const grid = [40, 60, 80, 100].map(v => `<line x1="${padL}" y1="${y(v)}" x2="${w - 10}" y2="${y(v)}" stroke="var(--border-soft)" stroke-dasharray="3 5"/><text x="0" y="${y(v) + 4}" fill="var(--muted-2)" font-size="10">${v}</text>`).join('');
   const dots = scores.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${v >= 80 ? 'var(--good)' : v >= 60 ? 'var(--warn)' : 'var(--bad)'}"/>`).join('');
   return `<svg class="trend-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    ${grid}<polyline points="${pts}" fill="none" stroke="url(#tg)" stroke-width="2.5" stroke-linejoin="round"/>
-    <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1a73e8"/><stop offset="1" stop-color="#12b5cb"/></linearGradient></defs>
+    ${grid}<polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
     ${dots}</svg>`;
 }
 
 /* ---------- 关于 ---------- */
 function viewAbout() {
   $('#main').innerHTML = `
-    <div class="page-head"><h1>ℹ️ 关于 TechSpeak</h1><div class="sub">面向技术与商业人士的英语演讲练习工具。</div></div>
+    <div class="page-head"><h1>关于 TechSpeak</h1><div class="sub">面向技术与商业人士的英语演讲练习工具。</div></div>
     <div class="grid grid-2">
       <div class="card">
-        <h3 class="mb-14">📰 素材来源</h3>
+        <h3 class="mb-14">素材来源</h3>
         <p class="text-sm text-muted">练习素材节选自以下官方博客，版权归原作者所有，仅作英语学习用途：</p>
         <div class="mt-14 flex" style="flex-direction:column;gap:10px">
           ${ARTICLES.map(a => `<a class="link-quiet text-sm" href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)} — ${esc(a.source)} ↗</a>`).join('')}
         </div>
       </div>
       <div class="card">
-        <h3 class="mb-14">📊 评分如何计算</h3>
+        <h3 class="mb-14">评分如何计算</h3>
         <div class="text-sm text-muted" style="display:flex;flex-direction:column;gap:8px">
           <div><b class="text" style="color:var(--text)">准确率（45%）</b>：语音识别结果与原文的词级动态规划对齐，逐词判定 命中 / 相近 / 错误 / 漏读。</div>
           <div><b style="color:var(--text)">清晰度（15%）</b>：来自浏览器语音识别的置信度。</div>
@@ -1096,13 +1095,13 @@ function viewAbout() {
         </div>
       </div>
       <div class="card">
-        <h3 class="mb-14">🌐 浏览器要求</h3>
+        <h3 class="mb-14">浏览器要求</h3>
         <div class="text-sm text-muted">
           语音识别基于 <b>Web Speech API</b>，需要 <b>Chrome / Edge</b>，且通过 <b>localhost 或 https</b> 访问。本地运行：<code class="kbd">python3 -m http.server 8080</code> 后访问 <code class="kbd">http://localhost:8080</code>。首次使用需允许麦克风权限。
         </div>
       </div>
       <div class="card">
-        <h3 class="mb-14">🔒 数据隐私</h3>
+        <h3 class="mb-14">数据隐私</h3>
         <div class="text-sm text-muted">词汇本与练习记录保存在你浏览器的 localStorage，不上传任何服务器。语音识别由浏览器内置引擎处理。</div>
       </div>
     </div>`;
@@ -1145,4 +1144,4 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 TTS.init();
 route();
 $('#mic-check').className = 'mic-check ' + (SRSupported ? 'ok' : 'bad');
-$('#mic-check').textContent = SRSupported ? '🎤 语音识别可用' : '⚠️ 语音识别不可用，请用 Chrome/Edge';
+$('#mic-check').textContent = SRSupported ? '语音识别可用' : '语音识别不可用，请用 Chrome/Edge';
