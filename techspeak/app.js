@@ -7,24 +7,16 @@
  * ============================================================ */
 
 /* ================= 基础工具 ================= */
+/* 纯逻辑（esc / splitSentences / splitWords / 评分算法 / chunkSpeech）
+ * 已抽取至 core.js，本文件只保留 DOM 与语音交互逻辑。 */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const SRSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 
-function splitSentences(text) {
-  const t = text.replace(/\s+/g, ' ').trim();
-  /* 保护小数点（3.5 / 42.5）不被当作句号切分 */
-  const guarded = t.replace(/(\d)\.(\d)/g, '$1\u0001$2');
-  const m = guarded.match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g);
-  return (m || [guarded]).map(s => s.replace(/\u0001/g, '.').trim()).filter(Boolean);
-}
-function splitWords(text) { return text.split(/\s+/).filter(Boolean); }
 function fmtDate(ts) {
   const d = new Date(ts);
   return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
-function todayKey() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; }
 
 function toast(msg, type = '') {
   const el = document.createElement('div');
@@ -67,14 +59,37 @@ const Prefs = {
 /* ================= TTS 引擎 ================= */
 const TTS = {
   voices: [],
+  _seq: 0,
   init() {
     const load = () => {
-      this.voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^en[-_]/i.test(v.lang));
+      const all = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+      /* 语音包按质量降序排列（流畅度关键：优先神经网络/自然语音，避开机械音） */
+      this.voices = all.filter(v => /^en[-_]/i.test(v.lang))
+        .sort((a, b) => this.voiceScore(b) - this.voiceScore(a));
       const sel = $('#voice-select');
-      if (sel && P && P.mode === 'listen') this.fillSelect(sel);
+      if (sel && typeof P !== 'undefined' && P && P.mode === 'listen') this.fillSelect(sel);
     };
     load();
-    if (window.speechSynthesis) speechSynthesis.onvoiceschanged = load;
+    if (window.speechSynthesis) {
+      speechSynthesis.onvoiceschanged = load;
+      /* 部分浏览器（如 Android Chrome）异步填充且不触发 onvoiceschanged：短暂轮询兜底 */
+      let tries = 0;
+      const poll = setInterval(() => {
+        if (this.voices.length || ++tries >= 12) { clearInterval(poll); return; }
+        load();
+      }, 250);
+    }
+  },
+  /* 语音包质量评分：natural/neural/premium 类最流畅，compact/espeak 类机械卡顿 */
+  voiceScore(v) {
+    const name = `${v.name} ${v.voiceURI}`.toLowerCase();
+    let s = 0;
+    if (/en[-_]us/i.test(v.lang)) s += 4;
+    else if (/en[-_]gb/i.test(v.lang)) s += 2;
+    if (/natural|neural|premium|enhanced|siri|google|aria|jenny|guy|libby|emma|ava/.test(name)) s += 6;
+    if (/compact|espeak|eloquence|novelty|whisper|pico|festival/.test(name)) s -= 8;
+    if (v.localService) s += 1; /* 本地语音零网络延迟，不易中途停顿 */
+    return s;
   },
   fillSelect(sel) {
     const cur = Prefs.get().voiceURI;
@@ -82,44 +97,90 @@ const TTS = {
   },
   pick() {
     const cur = Prefs.get().voiceURI;
-    return this.voices.find(v => v.voiceURI === cur) || this.voices.find(v => /US/i.test(v.lang)) || this.voices[0] || null;
+    const saved = this.voices.find(v => v.voiceURI === cur);
+    if (saved) return saved;
+    return this.voices[0] || null; /* voices 已按质量降序 */
+  },
+  /* Chrome 桌面网络语音约 15 秒后静默的已知 bug：定期 pause+resume 保活 */
+  _keepalive() {
+    const ua = navigator.userAgent;
+    if (!/Chrome/.test(ua) || /Edg|Mobile|Android/i.test(ua)) return () => { };
+    const iv = setInterval(() => {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause(); speechSynthesis.resume();
+      }
+    }, 10000);
+    return () => clearInterval(iv);
   },
   speak(text, opts = {}) {
     if (!window.speechSynthesis) { toast('当前浏览器不支持语音合成', 'err'); return; }
+    const seq = ++this._seq;
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    /* 破折号→逗号、省略号→句号：部分语音包会把 — 读成 "dash"，
+     * 替换后停顿自然。单 token 替换不改变词数，逐词高亮映射保持一致。 */
+    const ttsText = String(text).replace(/—/g, ',').replace(/…/g, '.');
+    /* 长句分块顺序播放，规避 speechSynthesis 长文本截断/卡顿（流畅度核心） */
+    const chunks = chunkSpeech(ttsText, 200);
+    if (!chunks.length) { opts.onEnd && opts.onEnd(); return; }
     const v = this.pick();
-    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
-    u.rate = opts.rate || 0.9;
-    const words = []; let re = /\S+/g, m;
-    while ((m = re.exec(text))) words.push(m.index);
-    let estTimer = null, estIdx = 0, boundary = false, done = false;
-    const finish = () => { if (done) return; done = true; clearInterval(estTimer); opts.onEnd && opts.onEnd(); };
-    u.onboundary = e => {
-      if (e.name && e.name !== 'word') return;
-      boundary = true; clearInterval(estTimer);
-      if (opts.onWord) {
-        let idx = 0;
-        for (let i = 0; i < words.length; i++) { if (e.charIndex >= words[i]) idx = i; else break; }
-        opts.onWord(idx);
-      }
+    const rate = opts.rate || 0.9;
+    const stopKA = this._keepalive();
+    let ci = 0, done = false;
+    const alive = () => this._seq === seq;
+    const finish = () => {
+      if (done) return; done = true;
+      stopKA();
+      opts.onEnd && opts.onEnd();
     };
-    u.onstart = () => {
-      opts.onStart && opts.onStart();
-      if (opts.onWord) {
-        setTimeout(() => {
-          if (boundary) return;
-          const estDur = (words.length / (2.7 * u.rate)) * 1000;
-          const step = Math.max(estDur / Math.max(words.length, 1), 120);
-          estTimer = setInterval(() => { if (estIdx < words.length) opts.onWord(estIdx++); }, step);
-        }, 650);
-      }
+    const speakChunk = () => {
+      if (done || !alive()) { stopKA(); return; }
+      if (ci >= chunks.length) { finish(); return; }
+      const ch = chunks[ci++];
+      const u = new SpeechSynthesisUtterance(ch.text);
+      if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+      u.rate = rate;
+      u.pitch = 1;
+      const words = []; let re = /\S+/g, m;
+      while ((m = re.exec(ch.text))) words.push(m.index);
+      let estTimer = null, estIdx = 0, boundary = false;
+      const emit = wi => { if (wi >= 0 && wi < ch.words) opts.onWord && opts.onWord(ch.startWi + wi); };
+      u.onboundary = e => {
+        if (e.name && e.name !== 'word') return;
+        boundary = true; clearInterval(estTimer);
+        if (opts.onWord) {
+          let idx = 0;
+          for (let i = 0; i < words.length; i++) { if (e.charIndex >= words[i]) idx = i; else break; }
+          emit(idx);
+        }
+      };
+      u.onstart = () => {
+        if (!alive()) { try { speechSynthesis.cancel(); } catch (e) { } return; }
+        opts.onStart && opts.onStart();
+        if (opts.onWord) {
+          setTimeout(() => {
+            if (boundary || done || !alive()) return;
+            const estDur = (ch.words / (2.7 * rate)) * 1000;
+            const step = Math.max(estDur / Math.max(ch.words, 1), 120);
+            estTimer = setInterval(() => { if (estIdx < ch.words) emit(estIdx++); }, step);
+          }, 650);
+        }
+      };
+      u.onend = () => {
+        clearInterval(estTimer);
+        if (done || !alive()) { stopKA(); return; }
+        setTimeout(speakChunk, 12); /* 块间 12ms 极短间隙，衔接自然 */
+      };
+      u.onerror = () => {
+        clearInterval(estTimer);
+        if (done || !alive()) { stopKA(); return; }
+        finish();
+      };
+      speechSynthesis.speak(u);
     };
-    u.onend = finish;
-    u.onerror = finish;
-    speechSynthesis.speak(u);
+    /* cancel() 后立即 speak 偶发失效：留 50ms 让引擎复位 */
+    setTimeout(speakChunk, 50);
   },
-  stop() { if (window.speechSynthesis) speechSynthesis.cancel(); }
+  stop() { this._seq++; if (window.speechSynthesis) speechSynthesis.cancel(); }
 };
 
 /* ================= 语音识别引擎 ================= */
@@ -197,142 +258,10 @@ async function startVoiceRecording() {
   } catch (e) { return null; }
 }
 
-/* ================= 文本规范化与数字转换 ================= */
-function normalizeWord(w) {
-  return (w || '').toLowerCase()
-    .replace(/[’‘]/g, "'")
-    .replace(/[^a-z0-9'.\-]/g, '')
-    .replace(/^['.\-]+|['.\-]+$/g, '');
-}
-const NUM_UNITS = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
-const NUM_SCALES = { hundred: 100, thousand: 1000, million: 1e6, billion: 1e9, trillion: 1e12 };
-
-/* 把连续的英文数字词合并成数字 token（两侧同样处理，保证对齐一致） */
-function prepareTokens(rawWords, indexMapper) {
-  const toks = rawWords.map((raw, i) => ({ norm: normalizeWord(raw), i })).filter(t => t.norm);
-  const out = [];
-  let i = 0;
-  const isNumStart = w => NUM_UNITS[w] != null || NUM_SCALES[w] != null;
-  while (i < toks.length) {
-    if (isNumStart(toks[i].norm)) {
-      let j = i, total = 0, current = 0, any = false, pointMode = false, dec = '';
-      const is = [];
-      while (j < toks.length) {
-        const w = toks[j].norm;
-        if (!pointMode) {
-          if (NUM_UNITS[w] != null) { current += NUM_UNITS[w]; any = true; }
-          else if (NUM_SCALES[w]) { total += (current || 1) * NUM_SCALES[w]; current = 0; any = true; }
-          else if (w === 'point' && any && j + 1 < toks.length && NUM_UNITS[toks[j + 1].norm] != null && NUM_UNITS[toks[j + 1].norm] < 10) { pointMode = true; }
-          else if (w === 'and' && any && j + 1 < toks.length && (isNumStart(toks[j + 1].norm))) { }
-          else break;
-        } else {
-          if (NUM_UNITS[w] != null && NUM_UNITS[w] < 10) { dec += String(NUM_UNITS[w]); }
-          else break;
-        }
-        is.push(toks[j].i); j++;
-      }
-      if (j > i) {
-        let val = String(total + current);
-        if (pointMode && dec) val += '.' + dec;
-        out.push({ norm: val, is, raw: rawWords[toks[i].i] });
-        i = j; continue;
-      }
-    }
-    out.push({ norm: toks[i].norm, is: [toks[i].i], raw: rawWords[toks[i].i] });
-    i++;
-  }
-  /* “4 x” → “4x” 合并 */
-  for (let k = 0; k < out.length - 1; k++) {
-    if (/^\d+(\.\d+)?$/.test(out[k].norm) && out[k + 1].norm === 'x') {
-      out[k] = { norm: out[k].norm + 'x', is: out[k].is.concat(out[k + 1].is), raw: out[k].raw + 'x' };
-      out.splice(k + 1, 1);
-    }
-  }
-  return out;
-}
-
-/* ================= 评分算法 ================= */
-function levDist(a, b) {
-  const m = a.length, n = b.length;
-  if (!m) return n; if (!n) return m;
-  let prev = Array.from({ length: n + 1 }, (_, j) => j);
-  for (let i = 1; i <= m; i++) {
-    const cur = [i];
-    for (let j = 1; j <= n; j++) {
-      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    }
-    prev = cur;
-  }
-  return prev[n];
-}
-function wordSim(a, b) {
-  if (a === b) return 1;
-  if (!a.length || !b.length) return 0;
-  return 1 - levDist(a, b) / Math.max(a.length, b.length);
-}
-function alignTokens(target, rec) {
-  const n = target.length, m = rec.length;
-  const INS = 0.55, DEL = 1.0;
-  const subCost = (a, b) => a === b ? 0 : 1 - wordSim(a, b);
-  const dp = Array.from({ length: n + 1 }, () => new Float64Array(m + 1));
-  for (let i = 0; i <= n; i++) dp[i][0] = i * DEL;
-  for (let j = 0; j <= m; j++) dp[0][j] = j * INS;
-  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++) {
-    dp[i][j] = Math.min(dp[i - 1][j - 1] + subCost(target[i - 1].norm, rec[j - 1].norm), dp[i - 1][j] + DEL, dp[i][j - 1] + INS);
-  }
-  const ops = []; let i = n, j = m;
-  while (i > 0 || j > 0) {
-    if (i > 0 && j > 0) {
-      const c = subCost(target[i - 1].norm, rec[j - 1].norm);
-      if (Math.abs(dp[i][j] - (dp[i - 1][j - 1] + c)) < 1e-9) {
-        const a = target[i - 1].norm, b = rec[j - 1].norm;
-        const s = a === b ? 1 : wordSim(a, b);
-        ops.push({ type: a === b ? 'hit' : (s >= 0.55 ? 'close' : 'sub'), tw: target[i - 1], rw: rec[j - 1], sim: s });
-        i--; j--; continue;
-      }
-    }
-    if (i > 0 && Math.abs(dp[i][j] - (dp[i - 1][j] + DEL)) < 1e-9) { ops.push({ type: 'miss', tw: target[i - 1] }); i--; continue; }
-    if (j > 0) { ops.push({ type: 'extra', rw: rec[j - 1] }); j--; continue; }
-    break;
-  }
-  ops.reverse();
-  return ops;
-}
-function scoreAttempt(targetTokens, recTokens, stats) {
-  const ops = alignTokens(targetTokens, recTokens);
-  let hit = 0, closeSum = 0, closeCount = 0, missCount = 0;
-  const closeWords = [], missWords = [];
-  ops.forEach(o => {
-    if (o.type === 'hit') hit++;
-    else if (o.type === 'close') { closeSum += o.sim; closeCount++; closeWords.push({ raw: o.tw.raw, heard: o.rw.norm }); }
-    else if (o.type === 'miss') { missCount++; missWords.push(o.tw.raw); }
-  });
-  const n = Math.max(targetTokens.length, 1);
-  const accuracy = Math.min(1, (hit + closeSum * 0.7) / n);
-  const completeness = Math.min(1, (hit + closeCount * 0.5) / n);
-  let fluency = 0, wpm = 0;
-  if (recTokens.length > 0 && stats.durationSec > 0.5) {
-    const durMin = stats.durationSec / 60;
-    wpm = recTokens.length / durMin;
-    const paceScore = (wpm >= 100 && wpm <= 165) ? 1 : (wpm < 100 ? Math.max(0, 1 - (100 - wpm) / 65) : Math.max(0, 1 - (wpm - 165) / 85));
-    const ppm = stats.pauseCount / durMin;
-    const pauseScore = ppm <= 12 ? 1 : Math.max(0, 1 - (ppm - 12) / 16);
-    fluency = 0.6 * paceScore + 0.4 * pauseScore;
-  }
-  const clarity = stats.confN > 0 ? stats.confSum / stats.confN : 0.8;
-  const overall = recTokens.length === 0 ? 0 : Math.round(100 * (0.45 * accuracy + 0.15 * clarity + 0.1 * completeness + 0.3 * fluency));
-  return { overall, accuracy, completeness, fluency, clarity, wpm: Math.round(wpm), pauses: stats.pauseCount, durationSec: Math.round(stats.durationSec || 0), ops, hit, closeCount, missCount, closeWords, missWords, targetCount: targetTokens.length, recCount: recTokens.length, empty: recTokens.length === 0 };
-}
-
+/* 评分算法（normalizeWord / prepareTokens / levDist / wordSim /
+ * alignTokens / scoreAttempt / buildRefWords / chunkSpeech）位于 core.js */
 /* ================= 练习会话（核心组件） ================= */
 let P = null;
-
-function buildRefWords(ref) {
-  const sentences = splitSentences(ref.text).map(t => ({ text: t, words: splitWords(t) }));
-  const W = [];
-  sentences.forEach((s, si) => s.words.forEach((raw, wi) => W.push({ s: si, w: wi, raw })));
-  return { sentences, W };
-}
 
 function mountPractice(ref) {
   const { sentences, W } = buildRefWords(ref);
@@ -904,7 +833,7 @@ function viewGlossary() {
     <div class="page-head"><h1>🧠 AI / Infra 术语库</h1><div class="sub">${GLOSSARY.length} 个技术与商业高频术语：音标、中文释义、英文定义与真实语境例句。点击术语听发音，或进行例句跟读练习。</div></div>
     <div class="flex gap-12 mb-14" style="align-items:center">
       <div class="search-box" style="flex:1;max-width:380px"><span class="ico">🔍</span><input id="g-search" placeholder="搜索术语 / 中文释义…"></div>
-      <div class="chip-row" id="g-cats">${cats.map((c, i) => `<span class="chip ${i === 0 ? 'active' : ''}" data-cat="${c}">${c}</span>`).join('')}</div>
+      <div class="chip-row" id="g-cats">${cats.map((c, i) => `<span class="chip ${i === 0 ? 'active' : ''}" data-cat="${esc(c)}">${esc(c)}</span>`).join('')}</div>
     </div>
     <div class="glossary-grid" id="glossary-grid"></div>`;
   let curCat = '全部';
@@ -1127,7 +1056,7 @@ function trendSVG(scores) {
   const dots = scores.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="${v >= 80 ? 'var(--good)' : v >= 60 ? 'var(--warn)' : 'var(--bad)'}"/>`).join('');
   return `<svg class="trend-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
     ${grid}<polyline points="${pts}" fill="none" stroke="url(#tg)" stroke-width="2.5" stroke-linejoin="round"/>
-    <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#38d9c0"/></linearGradient></defs>
+    <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1a73e8"/><stop offset="1" stop-color="#12b5cb"/></linearGradient></defs>
     ${dots}</svg>`;
 }
 

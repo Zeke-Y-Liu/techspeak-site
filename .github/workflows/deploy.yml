@@ -3,23 +3,42 @@ name: Deploy TechSpeak to GitHub Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'techspeak/**'
-      - '.github/workflows/deploy.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  deploy:
+  regression:
+    name: Regression & security tests
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run tests (unit + regression + security + data integrity)
+        run: npm test
+
+  deploy:
+    name: Deploy to GitHub Pages
+    # 仅主分支推送触发部署，且必须先通过全部回归/安全测试
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: regression
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

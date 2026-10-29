@@ -1,0 +1,12 @@
+{
+  "name": "techspeak",
+  "version": "1.1.0",
+  "private": true,
+  "description": "TechSpeak — 技术与商业英语演讲练习静态站点（含单元/回归/安全测试，Node 内置 test runner，零依赖）",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -389,7 +389,7 @@ const PARAGRAPHS = [
     wpmTarget: 135,
     sourceNote: '节选自 Anthropic · Claude 3.5 Sonnet',
     focus: 'benchmark / reasoning / proficiency 三连术语要清晰断开；marked improvement 中 marked 读 /ˈmɑːrkɪd/。',
-    text: "Claude 3.5 Sonnet sets new industry benchmarks for graduate-level reasoning, undergraduate-level knowledge, and coding proficiency. It shows marked improvement in grasping nuance, humor, and complex instructions."
+    text: "Claude 3.5 Sonnet sets new industry benchmarks for graduate-level reasoning, undergraduate-level knowledge, and coding proficiency. It shows marked improvement in grasping nuance, humor, and complex instructions, and is exceptional at writing high-quality content with a natural, relatable tone."
   },
   {
     id: 'tpu-scale',
@@ -468,3 +468,8 @@ const PARAGRAPHS = [
 /* 术语快速索引 */
 const GLOSSARY_MAP = {};
 GLOSSARY.forEach(g => { GLOSSARY_MAP[g.term.toLowerCase()] = g; });
+
+/* Node 测试导出（浏览器中不生效） */
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { ARTICLES, GLOSSARY, GLOSSARY_MAP, PATTERNS, PARAGRAPHS };
+}
