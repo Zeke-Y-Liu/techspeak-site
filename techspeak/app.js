@@ -259,7 +259,9 @@ let P = null;
 
 function mountPractice(ref) {
   const { sentences, W } = buildRefWords(ref);
-  P = { ref, sentences, W, mode: 'listen', sent: 0, cancelled: false, listen: { playingAll: false, rate: Prefs.get().rate || 0.9 }, shadow: { rec: null, scores: {} }, fluency: { rec: null, recording: false, recorder: null } };
+  /* mode 初始留空：mountPractice 末尾的 switchMode('listen') 需通过
+   * "P.mode === mode 则跳过" 的守卫，才能完成听读控制区的首次渲染 */
+  P = { ref, sentences, W, mode: '', sent: 0, cancelled: false, listen: { playingAll: false, rate: Prefs.get().rate || 0.9 }, shadow: { rec: null, scores: {} }, fluency: { rec: null, recording: false, recorder: null } };
   let readerHTML = '';
   sentences.forEach((s, si) => {
     readerHTML += `<span class="sentence" data-s="${si}">`;
