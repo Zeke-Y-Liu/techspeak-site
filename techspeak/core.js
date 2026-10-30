@@ -20,6 +20,18 @@ function splitSentences(text) {
 
 function splitWords(text) { return text.split(/\s+/).filter(Boolean); }
 
+/* ---------- TTS 音频键（预生成音频的文本指纹） ----------
+ * 三端（浏览器 app.js / scripts 生成端 / tests）同一算法：
+ * 规范化空白 → SHA-256 → 取前 8 字节 hex（16 字符）。
+ * 依赖 crypto.subtle（https 与 localhost 均属 secure context，可用）。 */
+async function ttsHash(text) {
+  const t = String(text).replace(/\s+/g, ' ').trim();
+  if (!t) return null;
+  if (typeof crypto === 'undefined' || !crypto.subtle) return null;
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(buf)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 /* ---------- 文本规范化与数字转换 ---------- */
 function normalizeWord(w) {
   return (w || '').toLowerCase()
@@ -210,7 +222,7 @@ function chunkSpeech(text, maxLen = 200) {
 /* ---------- Node 测试导出（浏览器中不生效） ---------- */
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    esc, splitSentences, splitWords, normalizeWord, NUM_UNITS, NUM_SCALES,
+    esc, splitSentences, splitWords, ttsHash, normalizeWord, NUM_UNITS, NUM_SCALES,
     prepareTokens, levDist, wordSim, alignTokens, scoreAttempt,
     buildRefWords, chunkSpeech
   };

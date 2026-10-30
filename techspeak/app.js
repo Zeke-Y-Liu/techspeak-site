@@ -56,9 +56,13 @@ const Prefs = {
   set(o) { localStorage.setItem(this.key, JSON.stringify(Object.assign(this.get(), o))); }
 };
 
-/* ================= TTS 引擎 ================= */
+/* ================= TTS 引擎（双引擎） =================
+ * 主引擎：预生成的微软神经网络语音 MP3（scripts/gen-audio.cjs
+ * 用 edge-tts 离线生成 → techspeak/audio/<指纹>.mp3 + manifest.json，
+ * 多邻国式"预生成静态音频"方案，跨设备音质一致）。
+ * 兜底引擎：浏览器 Web Speech API（任意未预生成文本，如生词）。 */
 const TTS = {
-  voices: [],
+  voices: [], audioSet: null, audioEl: null, _timer: null,
   init() {
     const load = () => {
       this.voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^en[-_]/i.test(v.lang));
@@ -67,6 +71,11 @@ const TTS = {
     };
     load();
     if (window.speechSynthesis) speechSynthesis.onvoiceschanged = load;
+    /* 预生成音频清单；加载失败则整体回退 Web Speech（与旧版行为一致） */
+    this.ready = fetch('audio/manifest.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(m => { this.audioSet = (m && Array.isArray(m.files)) ? new Set(m.files) : null; })
+      .catch(() => { this.audioSet = null; });
   },
   fillSelect(sel) {
     const cur = Prefs.get().voiceURI;
@@ -76,7 +85,57 @@ const TTS = {
     const cur = Prefs.get().voiceURI;
     return this.voices.find(v => v.voiceURI === cur) || this.voices.find(v => /US/i.test(v.lang)) || this.voices[0] || null;
   },
-  speak(text, opts = {}) {
+  /* 双引擎入口：文本指纹命中预生成清单 → 播本地神经网络音频；
+   * 未命中（生词等任意文本、清单缺失）→ Web Speech 兜底。 */
+  async speak(text, opts = {}) {
+    try { if (this.ready) await this.ready; } catch (e) { }
+    const key = await ttsHash(text);
+    if (key && this.audioSet && this.audioSet.has(key)) return this.playAudio(key, text, opts);
+    return this.speakWeb(text, opts);
+  },
+  playAudio(key, text, opts = {}) {
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    const audio = this.audioEl || (this.audioEl = new Audio());
+    audio.pause();
+    if ('preservesPitch' in audio) audio.preservesPitch = true; /* 变速不变调 */
+    const words = splitWords(text);
+    /* 按词长加标点停顿加权，把播放进度映射到词序（逐词高亮估算） */
+    const weights = words.map(w => {
+      const letters = w.replace(/[^\p{L}\p{N}]/gu, '').length || 1;
+      let extra = 0.25;
+      if (/[.!?]["')\]]*$/.test(w)) extra = 2.2;       /* 句末长停顿 */
+      else if (/[,;:—]["')\]]*$/.test(w)) extra = 1.1; /* 子句停顿 */
+      return letters + extra;
+    });
+    const total = weights.reduce((s, x) => s + x, 0);
+    let lastIdx = -1, done = false;
+    clearInterval(this._timer); this._timer = null;
+    const abort = () => {
+      done = true; clearInterval(this._timer); this._timer = null;
+      audio.onended = audio.onerror = audio.onloadedmetadata = null;
+    };
+    const finish = () => { if (done) return; abort(); opts.onEnd && opts.onEnd(); };
+    audio.onended = finish;
+    /* 音频不可用（404 / 解码失败 / 自动播放被拒）→ Web Speech 兜底 */
+    audio.onerror = () => { if (!done) { abort(); this.speakWeb(text, opts); } };
+    audio.onloadedmetadata = () => {
+      audio.onloadedmetadata = null;
+      opts.onStart && opts.onStart();
+      audio.playbackRate = opts.rate || 0.9;
+      audio.play().catch(() => { if (!done) { abort(); this.speakWeb(text, opts); } });
+      if (opts.onWord && words.length) {
+        this._timer = setInterval(() => {
+          const p = Math.min(audio.currentTime / (audio.duration || 1), 1);
+          let acc = 0, idx = words.length - 1;
+          for (let i = 0; i < words.length; i++) { acc += weights[i]; if (p * total < acc) { idx = i; break; } }
+          if (idx !== lastIdx) { lastIdx = idx; opts.onWord(idx); }
+        }, 60);
+      }
+    };
+    audio.src = `audio/${key}.mp3`;
+  },
+  /* Web Speech 兜底引擎（预生成清单未命中时） */
+  speakWeb(text, opts = {}) {
     if (!window.speechSynthesis) { toast('当前浏览器不支持语音合成', 'err'); return; }
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -111,7 +170,11 @@ const TTS = {
     u.onerror = finish;
     speechSynthesis.speak(u);
   },
-  stop() { if (window.speechSynthesis) speechSynthesis.cancel(); }
+  stop() {
+    clearInterval(this._timer); this._timer = null;
+    if (this.audioEl) { this.audioEl.pause(); this.audioEl.onended = this.audioEl.onerror = this.audioEl.onloadedmetadata = null; }
+    if (window.speechSynthesis) speechSynthesis.cancel();
+  }
 };
 
 /* ================= 语音识别引擎 ================= */
