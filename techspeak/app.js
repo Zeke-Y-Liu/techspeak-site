@@ -59,38 +59,14 @@ const Prefs = {
 /* ================= TTS 引擎 ================= */
 const TTS = {
   voices: [],
-  _seq: 0,
-  _pool: [], /* utterance 保活池（见 speak 内注释） */
   init() {
     const load = () => {
-      const all = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-      /* 语音包按质量降序排列（流畅度关键：优先神经网络/自然语音，避开机械音） */
-      this.voices = all.filter(v => /^en[-_]/i.test(v.lang))
-        .sort((a, b) => this.voiceScore(b) - this.voiceScore(a));
+      this.voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^en[-_]/i.test(v.lang));
       const sel = $('#voice-select');
-      if (sel && typeof P !== 'undefined' && P && P.mode === 'listen') this.fillSelect(sel);
+      if (sel && P && P.mode === 'listen') this.fillSelect(sel);
     };
     load();
-    if (window.speechSynthesis) {
-      speechSynthesis.onvoiceschanged = load;
-      /* 部分浏览器（如 Android Chrome）异步填充且不触发 onvoiceschanged：短暂轮询兜底 */
-      let tries = 0;
-      const poll = setInterval(() => {
-        if (this.voices.length || ++tries >= 12) { clearInterval(poll); return; }
-        load();
-      }, 250);
-    }
-  },
-  /* 语音包质量评分：natural/neural/premium 类最流畅，compact/espeak 类机械卡顿 */
-  voiceScore(v) {
-    const name = `${v.name} ${v.voiceURI}`.toLowerCase();
-    let s = 0;
-    if (/en[-_]us/i.test(v.lang)) s += 4;
-    else if (/en[-_]gb/i.test(v.lang)) s += 2;
-    if (/natural|neural|premium|enhanced|siri|google|aria|jenny|guy|libby|emma|ava/.test(name)) s += 6;
-    if (/compact|espeak|eloquence|novelty|whisper|pico|festival/.test(name)) s -= 8;
-    if (v.localService) s += 1; /* 本地语音零网络延迟，不易中途停顿 */
-    return s;
+    if (window.speechSynthesis) speechSynthesis.onvoiceschanged = load;
   },
   fillSelect(sel) {
     const cur = Prefs.get().voiceURI;
@@ -98,103 +74,44 @@ const TTS = {
   },
   pick() {
     const cur = Prefs.get().voiceURI;
-    const saved = this.voices.find(v => v.voiceURI === cur);
-    if (saved) return saved;
-    return this.voices[0] || null; /* voices 已按质量降序 */
-  },
-  /* Chrome 桌面网络语音约 15 秒后静默的已知 bug：定期 pause+resume 保活 */
-  _keepalive() {
-    const ua = navigator.userAgent;
-    /* Chromium 桌面（Chrome/Edge）的网络语音同源同 bug；移动端 pause/resume 不可靠，跳过 */
-    if (!/(Chrome|Edg)\//.test(ua) || /Mobile|Android/i.test(ua)) return () => { };
-    const iv = setInterval(() => {
-      if (speechSynthesis.speaking && !speechSynthesis.paused) {
-        speechSynthesis.pause(); speechSynthesis.resume();
-      }
-    }, 10000);
-    return () => clearInterval(iv);
+    return this.voices.find(v => v.voiceURI === cur) || this.voices.find(v => /US/i.test(v.lang)) || this.voices[0] || null;
   },
   speak(text, opts = {}) {
     if (!window.speechSynthesis) { toast('当前浏览器不支持语音合成', 'err'); return; }
-    const seq = ++this._seq;
-    this._pool.length = 0; /* 上一会话的 utterance 已失效 */
     speechSynthesis.cancel();
-    /* Chrome 已知问题：cancel 后可能残留 paused 状态，后续 speak 完全无声，显式复位 */
-    try { speechSynthesis.resume(); } catch (e) { }
-    /* 破折号→逗号、省略号→句号：部分语音包会把 — 读成 "dash"，
-     * 替换后停顿自然。单 token 替换不改变词数，逐词高亮映射保持一致。 */
-    const ttsText = String(text).replace(/—/g, ',').replace(/…/g, '.');
-    /* 长句分块顺序播放，规避 speechSynthesis 长文本截断/卡顿（流畅度核心） */
-    const chunks = chunkSpeech(ttsText, 200);
-    if (!chunks.length) { opts.onEnd && opts.onEnd(); return; }
+    const u = new SpeechSynthesisUtterance(text);
     const v = this.pick();
-    const rate = opts.rate || 0.9;
-    const stopKA = this._keepalive();
-    let ci = 0, done = false;
-    const alive = () => this._seq === seq;
-    const finish = () => {
-      if (done) return; done = true;
-      stopKA();
-      opts.onEnd && opts.onEnd();
+    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+    u.rate = opts.rate || 0.9;
+    const words = []; let re = /\S+/g, m;
+    while ((m = re.exec(text))) words.push(m.index);
+    let estTimer = null, estIdx = 0, boundary = false, done = false;
+    const finish = () => { if (done) return; done = true; clearInterval(estTimer); opts.onEnd && opts.onEnd(); };
+    u.onboundary = e => {
+      if (e.name && e.name !== 'word') return;
+      boundary = true; clearInterval(estTimer);
+      if (opts.onWord) {
+        let idx = 0;
+        for (let i = 0; i < words.length; i++) { if (e.charIndex >= words[i]) idx = i; else break; }
+        opts.onWord(idx);
+      }
     };
-    const speakChunk = () => {
-      if (done || !alive()) { stopKA(); return; }
-      if (ci >= chunks.length) { finish(); return; }
-      const ch = chunks[ci++];
-      const u = new SpeechSynthesisUtterance(ch.text);
-      /* Chromium 已知 bug：utterance 被垃圾回收会导致朗读中途突然静音，池引用保活 */
-      this._pool.push(u);
-      if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
-      u.rate = rate;
-      u.pitch = 1;
-      const words = []; let re = /\S+/g, m;
-      while ((m = re.exec(ch.text))) words.push(m.index);
-      let estTimer = null, estIdx = 0, boundary = false;
-      const emit = wi => { if (wi >= 0 && wi < ch.words) opts.onWord && opts.onWord(ch.startWi + wi); };
-      u.onboundary = e => {
-        if (e.name && e.name !== 'word') return;
-        boundary = true; clearInterval(estTimer);
-        if (opts.onWord) {
-          let idx = 0;
-          for (let i = 0; i < words.length; i++) { if (e.charIndex >= words[i]) idx = i; else break; }
-          emit(idx);
-        }
-      };
-      u.onstart = () => {
-        if (!alive()) { try { speechSynthesis.cancel(); } catch (e) { } return; }
-        opts.onStart && opts.onStart();
-        if (opts.onWord) {
-          setTimeout(() => {
-            if (boundary || done || !alive()) return;
-            const estDur = (ch.words / (2.7 * rate)) * 1000;
-            const step = Math.max(estDur / Math.max(ch.words, 1), 120);
-            estTimer = setInterval(() => { if (estIdx < ch.words) emit(estIdx++); }, step);
-          }, 650);
-        }
-      };
-      u.onend = () => {
-        clearInterval(estTimer);
-        this._pool = this._pool.filter(x => x !== u);
-        if (done || !alive()) { stopKA(); return; }
-        /* 块间 40ms：网络语音在上一块刚结束时立即发声会吞掉下一块首词 */
-        setTimeout(speakChunk, 40);
-      };
-      u.onerror = () => {
-        clearInterval(estTimer);
-        this._pool = this._pool.filter(x => x !== u);
-        if (done || !alive()) { stopKA(); return; }
-        finish();
-      };
-      speechSynthesis.speak(u);
+    u.onstart = () => {
+      opts.onStart && opts.onStart();
+      if (opts.onWord) {
+        setTimeout(() => {
+          if (boundary) return;
+          const estDur = (words.length / (2.7 * u.rate)) * 1000;
+          const step = Math.max(estDur / Math.max(words.length, 1), 120);
+          estTimer = setInterval(() => { if (estIdx < words.length) opts.onWord(estIdx++); }, step);
+        }, 650);
+      }
     };
-    /* cancel() 后立即 speak 偶发失效：留 50ms 让引擎复位 */
-    setTimeout(speakChunk, 50);
+    u.onend = finish;
+    u.onerror = finish;
+    speechSynthesis.speak(u);
   },
-  stop() {
-    this._seq++;
-    this._pool.length = 0;
-    if (window.speechSynthesis) { speechSynthesis.cancel(); try { speechSynthesis.resume(); } catch (e) { } }
-  }
+  stop() { if (window.speechSynthesis) speechSynthesis.cancel(); }
 };
 
 /* ================= 语音识别引擎 ================= */
