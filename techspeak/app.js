@@ -56,6 +56,19 @@ const Prefs = {
   set(o) { localStorage.setItem(this.key, JSON.stringify(Object.assign(this.get(), o))); }
 };
 
+/* 按词长加标点停顿加权，把播放进度映射到词序（逐词高亮估算） */
+function wordWeights(text) {
+  const words = splitWords(text);
+  const weights = words.map(w => {
+    const letters = w.replace(/[^\p{L}\p{N}]/gu, '').length || 1;
+    let extra = 0.25;
+    if (/[.!?]["')\]]*$/.test(w)) extra = 2.2;       /* 句末长停顿 */
+    else if (/[,;:—]["')\]]*$/.test(w)) extra = 1.1; /* 子句停顿 */
+    return letters + extra;
+  });
+  return { words, weights, total: weights.reduce((s, x) => s + x, 0) };
+}
+
 /* ================= TTS 引擎（双引擎） =================
  * 主引擎：预生成的微软神经网络语音 MP3（scripts/gen-audio.cjs
  * 用 edge-tts 离线生成 → techspeak/audio/<指纹>.mp3 + manifest.json，
@@ -98,16 +111,7 @@ const TTS = {
     const audio = this.audioEl || (this.audioEl = new Audio());
     audio.pause();
     if ('preservesPitch' in audio) audio.preservesPitch = true; /* 变速不变调 */
-    const words = splitWords(text);
-    /* 按词长加标点停顿加权，把播放进度映射到词序（逐词高亮估算） */
-    const weights = words.map(w => {
-      const letters = w.replace(/[^\p{L}\p{N}]/gu, '').length || 1;
-      let extra = 0.25;
-      if (/[.!?]["')\]]*$/.test(w)) extra = 2.2;       /* 句末长停顿 */
-      else if (/[,;:—]["')\]]*$/.test(w)) extra = 1.1; /* 子句停顿 */
-      return letters + extra;
-    });
-    const total = weights.reduce((s, x) => s + x, 0);
+    const { words, weights, total } = wordWeights(text);
     let lastIdx = -1, done = false;
     clearInterval(this._timer); this._timer = null;
     const abort = () => {
@@ -133,6 +137,43 @@ const TTS = {
       }
     };
     audio.src = `audio/${key}.mp3`;
+  },
+  /* 原声分段播放（视频导入素材）：seek 到句起点、播到句终点自动收尾，
+   * 逐词高亮用真实时间戳区间加权映射。音频不可用 → TTS 双引擎兜底。 */
+  playSegment(src, seg, opts = {}) {
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    const audio = this.audioEl || (this.audioEl = new Audio());
+    audio.pause();
+    if ('preservesPitch' in audio) audio.preservesPitch = true;
+    const { words, weights, total } = wordWeights(seg.text);
+    let lastIdx = -1, done = false;
+    clearInterval(this._timer); this._timer = null;
+    const abort = () => {
+      done = true; clearInterval(this._timer); this._timer = null;
+      audio.onended = audio.onerror = audio.onloadedmetadata = null;
+    };
+    const finish = () => { if (done) return; abort(); audio.pause(); opts.onEnd && opts.onEnd(); };
+    audio.onended = finish;
+    audio.onerror = () => { if (!done) { abort(); this.speak(seg.text, opts); } };
+    const startSeg = () => {
+      opts.onStart && opts.onStart();
+      audio.playbackRate = opts.rate || 0.9;
+      try { audio.currentTime = seg.start; } catch (e) { }
+      audio.play().catch(() => { if (!done) { abort(); this.speak(seg.text, opts); } });
+      if (opts.onWord && words.length) {
+        const span = Math.max(seg.end - seg.start, 0.2);
+        this._timer = setInterval(() => {
+          if (audio.currentTime >= seg.end - 0.03) { finish(); return; }
+          const p = Math.min(Math.max((audio.currentTime - seg.start) / span, 0), 1);
+          let acc = 0, idx = words.length - 1;
+          for (let i = 0; i < words.length; i++) { acc += weights[i]; if (p * total < acc) { idx = i; break; } }
+          if (idx !== lastIdx) { lastIdx = idx; opts.onWord(idx); }
+        }, 60);
+      }
+    };
+    audio.onloadedmetadata = () => { audio.onloadedmetadata = null; startSeg(); };
+    if (audio.getAttribute('src') === src) startSeg();  /* 同文件已在缓冲：免重载，直接 seek */
+    else audio.src = src;
   },
   /* Web Speech 兜底引擎（预生成清单未命中时） */
   speakWeb(text, opts = {}) {
@@ -258,10 +299,16 @@ async function startVoiceRecording() {
 let P = null;
 
 function mountPractice(ref) {
-  const { sentences, W } = buildRefWords(ref);
+  let sentences, W;
+  if (ref.media) {
+    /* 视频素材：用导入时的句级切分（自带原声时间戳） */
+    sentences = ref.media.segments.map(s => ({ text: s.text, words: splitWords(s.text), start: s.start, end: s.end }));
+    W = [];
+    sentences.forEach((s, si) => s.words.forEach((raw, wi) => W.push({ s: si, w: wi, raw })));
+  } else ({ sentences, W } = buildRefWords(ref));
   /* mode 初始留空：mountPractice 末尾的 switchMode('listen') 需通过
    * "P.mode === mode 则跳过" 的守卫，才能完成听读控制区的首次渲染 */
-  P = { ref, sentences, W, mode: '', sent: 0, cancelled: false, listen: { playingAll: false, rate: Prefs.get().rate || 0.9 }, shadow: { rec: null, scores: {} }, fluency: { rec: null, recording: false, recorder: null } };
+  P = { ref, sentences, W, media: ref.media || null, mode: '', sent: 0, cancelled: false, listen: { playingAll: false, rate: Prefs.get().rate || 0.9 }, shadow: { rec: null, scores: {} }, fluency: { rec: null, recording: false, recorder: null } };
   let readerHTML = '';
   sentences.forEach((s, si) => {
     readerHTML += `<span class="sentence" data-s="${si}">`;
@@ -275,9 +322,10 @@ function mountPractice(ref) {
     <div class="practice-head">
       <div>
         <h2>${esc(ref.title)}</h2>
-        <div class="meta"><span class="tag">${esc(ref.kind === 'article' ? '博客文章' : '句段练习')}</span><span>${esc(ref.subtitle)}</span>${wpmNote}</div>
+        <div class="meta"><span class="tag">${esc(ref.kind === 'article' ? '博客文章' : ref.kind === 'video' ? '视频精练' : '句段练习')}</span><span>${esc(ref.subtitle)}</span>${wpmNote}</div>
       </div>
     </div>
+    ${ref.video ? `<div class="text-muted text-sm mt-8">演讲者 <b>${esc(ref.video.speaker)}</b> · 来源 <b>${esc(VIDEO_META.platforms[ref.video.platform] || ref.video.platform)}</b> · ${esc(VIDEO_META.types[ref.video.type] || ref.video.type)} · 原声音频（变速不变调）${ref.video.sourceUrl ? ` · <a class="link-quiet" href="${esc(ref.video.sourceUrl)}" target="_blank" rel="noopener">视频来源 ↗</a>` : ''}</div>` : ''}
     ${!SRSupported ? '<div class="notice warn"><div>当前浏览器不支持语音识别。<b>听读模式可用</b>，跟读与评分请使用 Chrome / Edge（通过 localhost 或 https 访问）。</div></div>' : ''}
     ${focusNote}
     <div class="mode-tabs" id="mode-tabs">
@@ -348,10 +396,10 @@ function renderListenControls() {
       <span class="tag grey" id="sent-indicator"></span>
       <button class="btn btn-sm" id="btn-next">下一句</button>
       <div class="speed-ctl">语速 <input type="range" id="rate" min="0.5" max="1.2" step="0.05" value="${P.listen.rate}"><span class="val" id="rate-val">${P.listen.rate.toFixed(2)}x</span></div>
-      <select id="voice-select" class="btn btn-sm" style="max-width:200px"></select>
+      ${P.media ? '' : '<select id="voice-select" class="btn btn-sm" style="max-width:200px"></select>'}
     </div>
-    <div class="text-muted text-sm mt-8">听读技巧：先 0.7x 精听每个词 → 1.0x 跟着默读 → 最后切换到跟读模式开口。</div>`;
-  TTS.fillSelect($('#voice-select'));
+    <div class="text-muted text-sm mt-8">${P.media ? '演讲者原声音频（变速不变调）。' : ''}听读技巧：先 0.7x 精听每个词 → 1.0x 跟着默读 → 最后切换到跟读模式开口。</div>`;
+  if (!P.media) TTS.fillSelect($('#voice-select'));
   updateSentIndicator();
   $('#btn-play-all').addEventListener('click', () => { P.listen.playingAll = true; playSentenceFrom(P.sent); });
   $('#btn-play-one').addEventListener('click', () => { P.listen.playingAll = false; playSentenceFrom(P.sent); });
@@ -369,11 +417,16 @@ function setSentence(si) {
   if (P.mode === 'listen') { P.listen.playingAll = false; TTS.stop(); playSentenceFrom(si); }
   else if (P.mode === 'shadow') { clearWordMarks(); renderShadowControls(); }
 }
+/* 播放一句：视频素材用原声分段，其余走 TTS 双引擎 */
+function playSentenceAudio(si, opts = {}) {
+  const s = P.sentences[si];
+  const o = Object.assign({ rate: P.listen.rate, onWord: wi => highlightWord(si, wi) }, opts);
+  if (P.media) TTS.playSegment(P.media.audio, s, o);
+  else TTS.speak(s.text, o);
+}
 function playSentenceFrom(si) {
   P.sent = si; setCurrentSentence(si); updateSentIndicator(); clearSpeaking();
-  TTS.speak(P.sentences[si].text, {
-    rate: P.listen.rate,
-    onWord: wi => highlightWord(si, wi),
+  playSentenceAudio(si, {
     onEnd: () => {
       if (P && P.listen.playingAll && !P.cancelled) {
         if (si + 1 < P.sentences.length) setTimeout(() => { if (P && P.listen.playingAll) playSentenceFrom(si + 1); }, 520);
@@ -400,9 +453,7 @@ function renderShadowControls() {
     </div>
     <div class="transcript-box" id="transcript">点击 <b>跟读本句</b> 后朗读当前句子…</div>`;
   $$('.sent-chip').forEach(c => c.addEventListener('click', () => { P.sent = +c.dataset.si; clearWordMarks(); renderShadowControls(); }));
-  $('#btn-shadow-listen').addEventListener('click', () => {
-    TTS.speak(P.sentences[P.sent].text, { rate: P.listen.rate, onWord: wi => highlightWord(P.sent, wi) });
-  });
+  $('#btn-shadow-listen').addEventListener('click', () => playSentenceAudio(P.sent));
   $('#btn-shadow-next').addEventListener('click', () => { if (P.sent < P.sentences.length - 1) { P.sent++; clearWordMarks(); renderShadowControls(); } });
   $('#rate').addEventListener('input', e => { P.listen.rate = +e.target.value; $('#rate-val').textContent = P.listen.rate.toFixed(2) + 'x'; Prefs.set({ rate: P.listen.rate }); });
   $('#btn-shadow-rec').addEventListener('click', startShadowRec);
@@ -704,6 +755,7 @@ function viewHome() {
   const allRefs = [];
   ARTICLES.forEach(a => a.paragraphs.forEach((_, pi) => allRefs.push(articleParaRef(a, pi))));
   PARAGRAPHS.forEach(p => allRefs.push(libParaRef(p)));
+  VIDEOS.forEach(v => allRefs.push(videoRef(v)));
   const pick = allRefs[new Date().getDate() % allRefs.length];
   $('#main').innerHTML = `
     ${!SRSupported ? '<div class="notice warn"><div>当前浏览器不支持<b>语音识别</b>（跟读/评分需要）。请使用 <b>Chrome / Edge</b>，并通过 <b>localhost 或 https</b> 访问本站。听读与浏览功能不受影响。</div></div>' : ''}
@@ -880,6 +932,63 @@ function viewParagraphs() {
           <button class="btn btn-primary mt-14" onclick="location.hash='#/ppractice/${p.id}'">进入练习 →</button>
         </div>`).join('')}
     </div>`;
+}
+
+/* ---------- 视频精练（导入素材） ---------- */
+const VIDEO_META = {
+  platforms: { bilibili: 'B站', douyin: '抖音', weibo: '微博视频', wechat: '微信视频号', local: '本地上传' },
+  types: { keynote: '主题演讲', interview: '访谈', press: '产品发布会', talk: '大会分享', other: '其他' }
+};
+function videoRef(v) {
+  return {
+    kind: 'video', id: `video-${v.id}`, route: `#/vpractice/${v.id}`,
+    title: v.title, subtitle: `${v.speaker} · ${v.published}`,
+    back: '#/videos', refTitle: v.title, focus: v.focus, wpmTarget: v.wpmTarget,
+    media: { audio: v.audio, segments: v.sentences }, video: v
+  };
+}
+function fmtDur(sec) { const m = Math.floor(sec / 60), s = Math.round(sec % 60); return `${m}:${String(s).padStart(2, '0')}`; }
+function viewVideos() {
+  const plats = ['全部', ...new Set(VIDEOS.map(v => v.platform))];
+  const render = pf => {
+    const list = VIDEOS.filter(v => pf === '全部' || v.platform === pf);
+    $('#video-grid').innerHTML = list.map(v => `
+      <div class="card article-card">
+        <div class="flex gap-8 flex-wrap">
+          <span class="tag gold">${esc(VIDEO_META.platforms[v.platform] || v.platform)}</span>
+          <span class="tag teal">${esc(VIDEO_META.types[v.type] || v.type)}</span>
+        </div>
+        <h3 class="mt-8">${esc(v.title)}</h3>
+        <div class="meta-row">
+          <span class="diff-stars">${'★'.repeat(v.level)}${'☆'.repeat(3 - v.level)}</span>
+          <span>${esc(v.speaker)}</span><span>·</span><span>${esc(v.published)}</span>
+          ${v.tags.map(t => `<span class="tag grey">${esc(t)}</span>`).join('')}
+        </div>
+        <div class="desc">${esc(v.desc)}</div>
+        <div class="text-muted text-sm mt-8">原声 ${fmtDur(v.durationSec)} · ${v.sentences.length} 句 · ${v.sentences.reduce((s, x) => s + splitWords(x.text).length, 0)} 词 · 句级时间戳对齐</div>
+        <div class="flex gap-8 mt-14">
+          <button class="btn btn-primary" onclick="location.hash='#/vpractice/${esc(v.id)}'">进入练习 →</button>
+          ${v.sourceUrl ? `<a class="btn" href="${esc(v.sourceUrl)}" target="_blank" rel="noopener">视频来源 ↗</a>` : ''}
+        </div>
+      </div>`).join('') || '<div class="empty" style="grid-column:1/-1">该平台暂无素材</div>';
+  };
+  $('#main').innerHTML = `
+    <div class="page-head"><h1>视频精练</h1><div class="sub">从 B站 / 抖音 / 微博视频 / 微信视频号导入的真实演讲与访谈，保留<b>演讲者原声</b>：句级时间戳对齐逐词高亮，支持听读、逐句跟读与整段朗读评分。来源与类型均已用标签标注。</div></div>
+    <div class="grid grid-4 mb-14">
+      <div class="card stat-card"><div class="k">素材数</div><div class="v">${VIDEOS.length}</div></div>
+      <div class="card stat-card"><div class="k">总时长</div><div class="v">${fmtDur(VIDEOS.reduce((s, v) => s + v.durationSec, 0))}</div></div>
+      <div class="card stat-card"><div class="k">总句数</div><div class="v">${VIDEOS.reduce((s, v) => s + v.sentences.length, 0)}</div></div>
+      <div class="card stat-card"><div class="k">来源平台</div><div class="v">${new Set(VIDEOS.map(v => v.platform)).size}</div></div>
+    </div>
+    <div class="flex gap-12 mb-14" style="align-items:center">
+      <div class="chip-row" id="v-plats">${plats.map((p, i) => `<span class="chip ${i === 0 ? 'active' : ''}" data-p="${esc(p)}">${esc(p === '全部' ? p : (VIDEO_META.platforms[p] || p))}</span>`).join('')}</div>
+    </div>
+    <div class="grid" id="video-grid"></div>`;
+  render('全部');
+  $$('#v-plats .chip').forEach(c => c.addEventListener('click', () => {
+    $$('#v-plats .chip').forEach(x => x.classList.remove('active')); c.classList.add('active');
+    render(c.dataset.p);
+  }));
 }
 
 /* ---------- 词汇本 ---------- */
@@ -1107,6 +1216,13 @@ function route() {
     if (p) return mountPractice(libParaRef(p));
     return viewNotFound();
   }
+  const mv = hash.match(/^#\/vpractice\/([\w-]+)$/);
+  if (mv) {
+    const v = VIDEOS.find(x => x.id === mv[1]);
+    if (v) return mountPractice(videoRef(v));
+    return viewNotFound();
+  }
+  if (hash === '#/videos') return viewVideos();
   if (hash === '#/' || hash === '') return viewHome();
   if (hash === '#/library') return viewLibrary();
   const ma = hash.match(/^#\/article\/([\w-]+)$/);

@@ -65,7 +65,7 @@ test('不使用字符串参数的 setTimeout / setInterval', () => {
 test('innerHTML/outerHTML 写入点数量锁定基线', () => {
   const n1 = (appSrc.match(/\.innerHTML\s*=/g) || []).length;
   const n2 = (appSrc.match(/\.outerHTML\s*=/g) || []).length;
-  assert.equal(n1, 37, `innerHTML 写入点 ${n1} != 基线 37。若为有意新增，请确认所有插值均经 esc() 后更新基线`);
+  assert.equal(n1, 39, `innerHTML 写入点 ${n1} != 基线 39。若为有意新增，请确认所有插值均经 esc() 后更新基线（39 = 原 37 + 视频精练页 2）`);
   assert.equal(n2, 1, `outerHTML 写入点 ${n2} != 基线 1`);
 });
 
