@@ -112,18 +112,19 @@ const TTS = {
     audio.pause();
     if ('preservesPitch' in audio) audio.preservesPitch = true; /* 变速不变调 */
     const { words, weights, total } = wordWeights(text);
-    let lastIdx = -1, done = false;
+    let lastIdx = -1, done = false, started = false;
     clearInterval(this._timer); this._timer = null;
     const abort = () => {
-      done = true; clearInterval(this._timer); this._timer = null;
+      done = true; audio.pause(); clearInterval(this._timer); this._timer = null;
       audio.onended = audio.onerror = audio.onloadedmetadata = null;
     };
     const finish = () => { if (done) return; abort(); opts.onEnd && opts.onEnd(); };
     audio.onended = finish;
-    /* 音频不可用（404 / 解码失败 / 自动播放被拒）→ Web Speech 兜底 */
-    audio.onerror = () => { if (!done) { abort(); this.speakWeb(text, opts); } };
+    /* 起播前错误（404 / 解码失败）→ Web Speech 兜底；起播后的输出设备错误
+     * （无音频设备环境媒体时钟仍在走、逐词高亮正常）不误杀 interval。 */
+    audio.onerror = () => { if (done || started) return; abort(); this.speakWeb(text, opts); };
     audio.onloadedmetadata = () => {
-      audio.onloadedmetadata = null;
+      audio.onloadedmetadata = null; started = true;
       opts.onStart && opts.onStart();
       audio.playbackRate = opts.rate || 0.9;
       audio.play().catch(() => { if (!done) { abort(); this.speakWeb(text, opts); } });
@@ -146,16 +147,19 @@ const TTS = {
     audio.pause();
     if ('preservesPitch' in audio) audio.preservesPitch = true;
     const { words, weights, total } = wordWeights(seg.text);
-    let lastIdx = -1, done = false;
+    let lastIdx = -1, done = false, started = false;
     clearInterval(this._timer); this._timer = null;
     const abort = () => {
-      done = true; clearInterval(this._timer); this._timer = null;
+      done = true; audio.pause(); clearInterval(this._timer); this._timer = null;
       audio.onended = audio.onerror = audio.onloadedmetadata = null;
     };
-    const finish = () => { if (done) return; abort(); audio.pause(); opts.onEnd && opts.onEnd(); };
+    const finish = () => { if (done) return; abort(); opts.onEnd && opts.onEnd(); };
     audio.onended = finish;
-    audio.onerror = () => { if (!done) { abort(); this.speak(seg.text, opts); } };
+    /* 起播前错误（404 / 解码失败）→ TTS 双引擎兜底；起播后的输出设备错误
+     * （无音频设备环境媒体时钟仍在走、逐词高亮正常）不误杀 interval。 */
+    audio.onerror = () => { if (done || started) return; abort(); this.speak(seg.text, opts); };
     const startSeg = () => {
+      started = true;
       opts.onStart && opts.onStart();
       audio.playbackRate = opts.rate || 0.9;
       try { audio.currentTime = seg.start; } catch (e) { }
