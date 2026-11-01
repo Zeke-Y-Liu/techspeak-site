@@ -152,14 +152,26 @@ def trim_compress(src, start, duration, dst):
 
 
 def transcribe(audio, model_name, lang):
-    """faster-whisper 转录，返回 [(text, start, end)]。"""
+    """faster-whisper 转录，返回 [(text, start, end)]。
+    输入音频先经 ffmpeg 解码为 16kHz 单声道 float32 PCM 数组，
+    绕过 faster-whisper 内部的 PyAV 解码（新版 PyAV 移除了
+    metadata_errors 参数，与其 1.2.x 不兼容）。"""
     from faster_whisper import WhisperModel
+    import numpy as np
     t0 = time.time()
-    print(f'加载模型 {model_name}（首次运行需下载）…', flush=True)
+    print(f'加载模型 {model_name}…', flush=True)
     model = WhisperModel(model_name, device='cpu', compute_type='int8')
-    print(f'模型就绪 ({time.time()-t0:.0f}s)，开始转录…', flush=True)
+    print(f'模型就绪 ({time.time()-t0:.0f}s)，解码音频…', flush=True)
+    r = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error',
+                        '-i', str(audio), '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'],
+                       capture_output=True)
+    if r.returncode != 0 or not r.stdout:
+        sys.stderr.write(r.stderr.decode('utf-8', 'ignore'))
+        sys.exit('ffmpeg 音频解码失败')
+    samples = np.frombuffer(r.stdout, dtype=np.float32)
+    print(f'开始转录（{len(samples)/16000:.0f}s 音频）…', flush=True)
     segments, info = model.transcribe(
-        str(audio), language=lang or None, vad_filter=True,
+        samples, language=lang or None, vad_filter=True,
         vad_parameters={'min_silence_duration_ms': 500},
         beam_size=5)
     out = []
@@ -225,11 +237,14 @@ def main():
         sys.exit('无法从链接识别平台，请用 --platform 指定（bilibili/douyin/weibo/wechat/local）')
 
     import tempfile
+    audio_rel = f'media/{args.id}.mp3'
+    audio_abs = ROOT / 'techspeak' / audio_rel
     with tempfile.TemporaryDirectory() as td:
-        src = Path(args.file) if args.file else download_audio(args.url, Path(td), args.id)
-        audio_rel = f'media/{args.id}.mp3'
-        audio_abs = ROOT / 'techspeak' / audio_rel
-        trim_compress(src, args.start, args.duration, audio_abs)
+        if audio_abs.exists() and audio_abs.stat().st_size > 20000:
+            print(f'音频已存在，跳过下载/裁剪: {audio_abs}')
+        else:
+            src = Path(args.file) if args.file else download_audio(args.url, Path(td), args.id)
+            trim_compress(src, args.start, args.duration, audio_abs)
 
         raw = transcribe(audio_abs, args.model, args.lang)
     sentences = clean_sentences(raw)

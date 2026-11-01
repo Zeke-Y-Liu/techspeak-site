@@ -409,7 +409,7 @@ function renderListenControls() {
     P.listen.rate = +e.target.value; $('#rate-val').textContent = P.listen.rate.toFixed(2) + 'x';
     Prefs.set({ rate: P.listen.rate });
   });
-  $('#voice-select').addEventListener('change', e => Prefs.set({ voiceURI: e.target.value }));
+  if (!P.media) $('#voice-select').addEventListener('change', e => Prefs.set({ voiceURI: e.target.value }));
 }
 function updateSentIndicator() { const el = $('#sent-indicator'); if (el) el.textContent = `句 ${P.sent + 1} / ${P.sentences.length}`; }
 function setSentence(si) {
