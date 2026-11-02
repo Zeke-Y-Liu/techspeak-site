@@ -34,6 +34,7 @@ html {
   scroll-behavior: smooth;
   /* 阻止手机旋转横屏时浏览器自动放大文字（iOS text autosizing） */
   -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent; /* 去除移动端点按灰色高亮 */
 }
 body {
   font-family: var(--sans);
@@ -451,6 +452,29 @@ audio.player { width: 100%; margin-top: 10px; }
   .reader { font-size: 17px; padding: 22px 18px; }
   .mode-tab { min-width: 100%; }
   .dim-grid { grid-template-columns: 1fr; }
+  /* iOS：输入框/下拉聚焦时 font-size<16px 会强制放大整页 → 统一 16px */
+  .search-box input, #voice-select { font-size: 16px; }
+  /* 手机排版密度收紧 */
+  .page-head h1 { font-size: 22px; }
+  .hero { padding: 30px 22px; }
+  .hero h1 { font-size: 25px; }
+  .modal-box { padding: 20px; }
+  .modal-head h3 { font-size: 20px; }
+  .flash-card { padding: 26px; }
+  .flash-word { font-size: 32px; }
+  .flash-ipa { font-size: 14px; }
+  .term-card { padding: 16px; }
+  .vocab-card .vw { min-width: 106px; }
+  .score-ring { width: 108px; height: 108px; }
+  .sent-chip { height: 34px; } /* 触控目标加大 */
+  /* 文章卡：窄屏多行标题会撞角标 → 改为文档流置顶 */
+  .article-card .src-badge { position: static; align-self: flex-start; order: -1; }
+  .article-card h3 { padding-right: 0; padding-top: 2px; }
+}
+/* 超窄屏（≤400px，如 iPhone SE1/320px Android）：4 列网格改单列，
+ * 避免词汇本"翻卡复习+导出"等不可换行按钮组把网格轨撑出视口 */
+@media (max-width: 400px) {
+  .grid-4 { grid-template-columns: 1fr; }
 }
 
 /* ============ 手机横屏（旋转自适应）============
