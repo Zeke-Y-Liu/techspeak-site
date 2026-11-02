@@ -321,6 +321,419 @@ const VIDEOS = [
         "end": 419.76
       }
     ]
+  },
+  {
+    "id": "musk-roadster-event-2026",
+    "title": "特斯拉 Roadster 发布会演讲（技术讲解节选）",
+    "speaker": "埃隆·马斯克 Elon Musk",
+    "platform": "bilibili",
+    "sourceUrl": "https://www.bilibili.com/video/BV17zn66hEga/",
+    "published": "2026-10-15",
+    "type": "press",
+    "level": 3,
+    "tags": [
+      "Tesla",
+      "SpaceX",
+      "Roadster",
+      "发布会"
+    ],
+    "desc": "特斯拉 CEO 埃隆·马斯克与设计团队在得州 SpaceX 麦格雷戈试验基地举行的全新 Roadster 发布会节选：飞行演示后的现场技术讲解，涵盖吸地风扇、冷气推进与直线加速。",
+    "focus": "跟读发布会现场对话：Peter Thiel \"flying cars\" 金句的语气、技术参数表达（600 liters / 10 nozzles / 2 Gs）与现场即兴幽默的节奏。",
+    "wpmTarget": 150,
+    "durationSec": 420,
+    "audio": "media/musk-roadster-event-2026.mp3",
+    "sentences": [
+      {
+        "text": "Yeah, well, you know, friend of mine, Peter Thiel, once said that the future promised us flying cars, but instead we got 140 characters.",
+        "start": 0,
+        "end": 11.41
+      },
+      {
+        "text": "Well, not anymore.",
+        "start": 11.41,
+        "end": 13.72
+      },
+      {
+        "text": "Exactly.",
+        "start": 13.72,
+        "end": 14.49
+      },
+      {
+        "text": "That's not the last thing you'll see, by the way.",
+        "start": 14.49,
+        "end": 20.28
+      },
+      {
+        "text": "To do that, we have a suction, a fan suction system on the bottom of the car that can pull up to two Gs in order to make the car go upside down.",
+        "start": 20.28,
+        "end": 31.56
+      },
+      {
+        "text": "And then we borrowed some technology from SpaceX to do the rest.",
+        "start": 31.56,
+        "end": 35.67
+      },
+      {
+        "text": "Yeah, I mean, this car really sucks.",
+        "start": 35.67,
+        "end": 38.11
+      },
+      {
+        "text": "Okay, this car could suck the chrome off a trailer hitch.",
+        "start": 38.11,
+        "end": 42
+      },
+      {
+        "text": "It could suck a tennis ball through a hose pipe.",
+        "start": 42,
+        "end": 46.15
+      },
+      {
+        "text": "So, and it could stick upside down.",
+        "start": 46.15,
+        "end": 48.9
+      },
+      {
+        "text": "Now, you might say, like, how often do you want to stick upside down in a car?",
+        "start": 48.9,
+        "end": 53.43
+      },
+      {
+        "text": "Maybe not that often, but it actually has an actual benefit on the track or just driving, where the downforce of the car means you can corner incredibly well.",
+        "start": 53.43,
+        "end": 67.78
+      },
+      {
+        "text": "Like you can corner like it looks like you're breaking physics because the car sticks to the ground so hard.",
+        "start": 67.78,
+        "end": 75.69
+      },
+      {
+        "text": "So acceleration, cornering, it's going to crush every track record that has ever existed.",
+        "start": 75.69,
+        "end": 81.14
+      },
+      {
+        "text": "So, yeah, I think the last time we put Roadster with SpaceX, we had Starman in it.",
+        "start": 81.14,
+        "end": 94.9
+      },
+      {
+        "text": "And maybe we should check, did we put anyone in the car?",
+        "start": 94.9,
+        "end": 99.19
+      },
+      {
+        "text": "Yeah, I think Starman is going to make an appearance.",
+        "start": 99.19,
+        "end": 102.88
+      },
+      {
+        "text": "I think he went for a little ride.",
+        "start": 102.88,
+        "end": 107.43
+      },
+      {
+        "text": "Any minute now.",
+        "start": 107.43,
+        "end": 108.43
+      },
+      {
+        "text": "Yeah, so, yeah.",
+        "start": 108.43,
+        "end": 110.43
+      },
+      {
+        "text": "Here he is.",
+        "start": 110.43,
+        "end": 113.58
+      },
+      {
+        "text": "No?",
+        "start": 113.58,
+        "end": 114.58
+      },
+      {
+        "text": "The anticipation.",
+        "start": 117.65,
+        "end": 119.03
+      },
+      {
+        "text": "Hey, buddy.",
+        "start": 119.03,
+        "end": 120.03
+      },
+      {
+        "text": "Hi.",
+        "start": 120.03,
+        "end": 122.44
+      },
+      {
+        "text": "He's being coy.",
+        "start": 122.44,
+        "end": 126.7
+      },
+      {
+        "text": "Just to be clear, that is not a real human.",
+        "start": 127.3,
+        "end": 129.54
+      },
+      {
+        "text": "Yeah, so, the car has, obviously, attitude control thrusters and main thrusters in the rear, so it can basically fly like a rocket.",
+        "start": 129.54,
+        "end": 141.6
+      },
+      {
+        "text": "And it could do rolls.",
+        "start": 141.6,
+        "end": 143.76
+      },
+      {
+        "text": "It could do like crazy gymnastics.",
+        "start": 143.76,
+        "end": 148.36
+      },
+      {
+        "text": "Whatever you want, really.",
+        "start": 148.36,
+        "end": 150.43
+      },
+      {
+        "text": "Now, I should say that this is not necessarily a safety optimized car, but it takes the fun meter to 11 out of 10.",
+        "start": 150.43,
+        "end": 163.1
+      },
+      {
+        "text": "But speaking of fun meter, you want to try one?",
+        "start": 166.77,
+        "end": 169.73
+      },
+      {
+        "text": "Let's try something else.",
+        "start": 169.73,
+        "end": 171.45
+      },
+      {
+        "text": "Yeah, I mean, that was just a little flight.",
+        "start": 171.45,
+        "end": 176.81
+      },
+      {
+        "text": "Let's do a longer flight.",
+        "start": 176.81,
+        "end": 179.78
+      },
+      {
+        "text": "All right.",
+        "start": 179.78,
+        "end": 180.49
+      },
+      {
+        "text": "Let's see who gets it up.",
+        "start": 180.49,
+        "end": 182.63
+      },
+      {
+        "text": "I mean, I've seen a lot of things, but I've never seen that before.",
+        "start": 216.72,
+        "end": 224.42
+      },
+      {
+        "text": "Tony Hawk would be proud.",
+        "start": 224.5,
+        "end": 226
+      },
+      {
+        "text": "We call that the kickflip.",
+        "start": 226,
+        "end": 227.5
+      },
+      {
+        "text": "Yeah, I think we're going to clear it more than our whole fleet.",
+        "start": 227.5,
+        "end": 231.43
+      },
+      {
+        "text": "Yeah.",
+        "start": 231.43,
+        "end": 232.75
+      },
+      {
+        "text": "Yeah, we can go further.",
+        "start": 232.75,
+        "end": 233.75
+      },
+      {
+        "text": "Like, this will be an actual car that's on the roads.",
+        "start": 233.75,
+        "end": 239.81
+      },
+      {
+        "text": "Yeah.",
+        "start": 239.81,
+        "end": 241.64
+      },
+      {
+        "text": "Yeah, I'm not sure it's necessarily legal in all jurisdictions, but like, there will be such a car that someone can own.",
+        "start": 241.64,
+        "end": 250.23
+      },
+      {
+        "text": "So, it's going to be pretty, pretty wild that you can have a rocket car.",
+        "start": 250.23,
+        "end": 255.03
+      },
+      {
+        "text": "Yeah, I agree.",
+        "start": 255.03,
+        "end": 257.03
+      },
+      {
+        "text": "I think that's what we borrowed from SpaceX technology.",
+        "start": 257.03,
+        "end": 259.03
+      },
+      {
+        "text": "You talked about the carbon overwrap pressure vessels.",
+        "start": 259.03,
+        "end": 261.03
+      },
+      {
+        "text": "I just want to tell everyone, because I'm a spec guy, there's two of them in the car.",
+        "start": 261.03,
+        "end": 265.03
+      },
+      {
+        "text": "They are a total of 600 liters.",
+        "start": 265.03,
+        "end": 267.03
+      },
+      {
+        "text": "There's about 250 kilos of air.",
+        "start": 267.03,
+        "end": 269.03
+      },
+      {
+        "text": "And we have 10 nozzles to do all that work.",
+        "start": 269.03,
+        "end": 272.03
+      },
+      {
+        "text": "Yeah, and it's using an advanced ultra-high pressure air tank.",
+        "start": 272.03,
+        "end": 280.29
+      },
+      {
+        "text": "So, the car can recharge its air tank.",
+        "start": 280.29,
+        "end": 283.29
+      },
+      {
+        "text": "So, it's not like you need special propellant or anything like that.",
+        "start": 283.29,
+        "end": 287.29
+      },
+      {
+        "text": "It literally is just going to puff itself up and be able to do these maneuvers whenever you'd like.",
+        "start": 287.29,
+        "end": 296.09
+      },
+      {
+        "text": "Well, why don't we show them the car?",
+        "start": 296.09,
+        "end": 298.09
+      },
+      {
+        "text": "To bring it out?",
+        "start": 298.09,
+        "end": 299.09
+      },
+      {
+        "text": "Since we knew the car was going to fly, we looked for some inspiration about flying and we thought we would lean into the most badass stuff out there, SR-71, cars that transform.",
+        "start": 299.09,
+        "end": 311.09
+      },
+      {
+        "text": "And that led us to the new Roadster.",
+        "start": 311.09,
+        "end": 316.89
+      },
+      {
+        "text": "So, now you get an up-close look at the new Roadster.",
+        "start": 353.01,
+        "end": 359.06
+      },
+      {
+        "text": "Thank you, Andy and Lamar.",
+        "start": 359.06,
+        "end": 360.06
+      },
+      {
+        "text": "Those guys are kicking ass on our engineering team making this all happen.",
+        "start": 360.06,
+        "end": 364.06
+      },
+      {
+        "text": "We can see the car.",
+        "start": 364.06,
+        "end": 366.7
+      },
+      {
+        "text": "Very clean.",
+        "start": 366.7,
+        "end": 368.02
+      },
+      {
+        "text": "It's a nice clean aesthetic.",
+        "start": 368.02,
+        "end": 370.02
+      },
+      {
+        "text": "Like I said, we leaned into a little bit of some of the aerospace aesthetics.",
+        "start": 370.02,
+        "end": 375.02
+      },
+      {
+        "text": "It's a two-seater.",
+        "start": 375.02,
+        "end": 377.02
+      },
+      {
+        "text": "I'll open it up.",
+        "start": 377.02,
+        "end": 378.02
+      },
+      {
+        "text": "As you can see, two guys got out of it.",
+        "start": 378.02,
+        "end": 380.69
+      },
+      {
+        "text": "We leaned into lightweight as well, so the seats are molded into the chassis.",
+        "start": 380.69,
+        "end": 386.39
+      },
+      {
+        "text": "It's a steer-by-wire system.",
+        "start": 386.39,
+        "end": 388.39
+      },
+      {
+        "text": "So we have a steer-by-wire yoke, steer-by-wire brake, steer-by-wire throttle.",
+        "start": 388.39,
+        "end": 393.39
+      },
+      {
+        "text": "And as we get to the rear of the car, this is where a lot of the action, you can't see it but online, in the diffuser areas where the thrusters are, the fans are, and this is kind of the business end of the car.",
+        "start": 393.39,
+        "end": 409.97
+      },
+      {
+        "text": "But the car can transform because we wanted to make a pretty car but also a car that could deliver amazing downforce.",
+        "start": 409.97,
+        "end": 418.48
+      }
+    ]
   }
 ];
 
