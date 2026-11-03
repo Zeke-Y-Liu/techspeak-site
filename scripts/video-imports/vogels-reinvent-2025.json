@@ -1,0 +1,302 @@
+{
+ "id": "vogels-reinvent-2025",
+ "title": "AWS re:Invent 2025 谢幕主题演讲：拥抱变化 If you evolve（开场节选）",
+ "speaker": "Werner Vogels 维尔纳·沃格尔",
+ "platform": "bilibili",
+ "sourceUrl": "https://www.bilibili.com/video/BV16Dm2BDENF",
+ "published": "2025-12-04",
+ "type": "keynote",
+ "level": 3,
+ "tags": [
+  "Werner Vogels",
+  "AWS",
+  "re:Invent"
+ ],
+ "desc": "公众认知中的 AWS CTO Werner Vogels 在 re:Invent 2025 闭幕日（2025-12-04）的最后一场主题演讲（谢幕之作），宣告 14 场 re:Invent keynote 收官，谈开发者如何面对 AI 变化（\"Will AI take my job? Maybe. I will transform\"），回顾编译器/结构化编程/C++ 历史，到 1998 年 Amazon 拆分单体架构的著名时刻。",
+ "focus": "跟读谢幕演讲叙事节奏：排比句 \"tools evolve, architectures evolve, expectations evolve, and so do we\"、\"Will AI take my job?\" 问答、\"Absolutely not, if you evolve\" 重音，及 assembler/COBOL/Pascal/monolith/distributed systems 术语。",
+ "wpmTarget": 125,
+ "durationSec": 358.3,
+ "audio": "media/vogels-reinvent-2025.mp3",
+ "sentences": [
+  {
+   "text": "Good morning. Oh, no, it's not. Hello, guys.",
+   "start": 0.03,
+   "end": 3.62
+  },
+  {
+   "text": "So the video showed you every generation of developers that face the new wave of change.",
+   "start": 4.14,
+   "end": 10.7
+  },
+  {
+   "text": "You know, tools evolve, architectures evolve, expectations evolve, and so do we.",
+   "start": 10.7,
+   "end": 18.76
+  },
+  {
+   "text": "But before we talk about that, let's talk about the elephant in the room.",
+   "start": 18.76,
+   "end": 29.08
+  },
+  {
+   "text": "Yeah, I've been giving this keynote since 2012, and I've done all of them.",
+   "start": 29.74,
+   "end": 38.83
+  },
+  {
+   "text": "That's a lot of t-shirts, by the way.",
+   "start": 38.83,
+   "end": 40.85
+  },
+  {
+   "text": "Yeah, but today, this week ends.",
+   "start": 40.85,
+   "end": 45.95
+  },
+  {
+   "text": "This is my final re:Invent keynote.",
+   "start": 46.61,
+   "end": 49.87
+  },
+  {
+   "text": "I've still things to do. I'm not leaving Amazon or anything like that.",
+   "start": 51.5,
+   "end": 57.84
+  },
+  {
+   "text": "But I think that after 14 of these events, you guys are owed young, fresh, new voices.",
+   "start": 57.84,
+   "end": 67.91
+  },
+  {
+   "text": "There are so many amazing engineers at Amazon that have great stories to tell, to teach, to help you, to educate you.",
+   "start": 68.61,
+   "end": 80.54
+  },
+  {
+   "text": "And I think it's time for those younger, different voices of AWS to be in front of you.",
+   "start": 80.54,
+   "end": 88.05
+  },
+  {
+   "text": "But nobody forces me to do this.",
+   "start": 88.05,
+   "end": 90.5
+  },
+  {
+   "text": "I'm not leaving Amazon or anything like this.",
+   "start": 90.5,
+   "end": 93.64
+  },
+  {
+   "text": "This is my decision to make sure that you get to hear different voices than just mine.",
+   "start": 93.64,
+   "end": 101.8
+  },
+  {
+   "text": "Now let's talk about the other elephants in the room.",
+   "start": 103.11,
+   "end": 108.17
+  },
+  {
+   "text": "I visited AWS customers all over the world, and there is this, there is one question that keeps coming up in every country and in every city.",
+   "start": 109.89,
+   "end": 123.91
+  },
+  {
+   "text": "Will AI take my job?",
+   "start": 125.3,
+   "end": 130.02
+  },
+  {
+   "text": "Maybe.",
+   "start": 133.71,
+   "end": 134.5
+  },
+  {
+   "text": "Yeah.",
+   "start": 137.55,
+   "end": 138.34
+  },
+  {
+   "text": "I will transform.",
+   "start": 138.56,
+   "end": 140.06
+  },
+  {
+   "text": "Some tasks will be automated.",
+   "start": 140.95,
+   "end": 142.9
+  },
+  {
+   "text": "Some skills will become obsolete.",
+   "start": 143.47,
+   "end": 146.38
+  },
+  {
+   "text": "New ones will emerge.",
+   "start": 147.75,
+   "end": 149.7
+  },
+  {
+   "text": "So maybe we should rephrase and reframe this question.",
+   "start": 150.68,
+   "end": 157.21
+  },
+  {
+   "text": "Yeah.",
+   "start": 158.77,
+   "end": 160.01
+  },
+  {
+   "text": "Will AI make me obsolete?",
+   "start": 160.85,
+   "end": 164.78
+  },
+  {
+   "text": "Absolutely not.",
+   "start": 167.74,
+   "end": 169.47
+  },
+  {
+   "text": "Yeah.",
+   "start": 170.91,
+   "end": 171.63
+  },
+  {
+   "text": "If you evolve.",
+   "start": 174.54,
+   "end": 176.06
+  },
+  {
+   "text": "Yeah, and if I look at the past years at Amazon, where, you know, we've been using all these new tools.",
+   "start": 176.88,
+   "end": 185.78
+  },
+  {
+   "text": "We've seen how you can evolve over time and still be a great engineer with just a new set of tools in your hands.",
+   "start": 185.78,
+   "end": 198.04
+  },
+  {
+   "text": "Because we evolve as developers.",
+   "start": 198.81,
+   "end": 202.65
+  },
+  {
+   "text": "Yeah, and so must our tools.",
+   "start": 203.87,
+   "end": 206.77
+  },
+  {
+   "text": "And so change is constant.",
+   "start": 208.33,
+   "end": 212.39
+  },
+  {
+   "text": "And this has always been the case. It's nothing new.",
+   "start": 212.47,
+   "end": 216.63
+  },
+  {
+   "text": "Yeah, yeah, let's go back in time a little bit.",
+   "start": 218.13,
+   "end": 221.69
+  },
+  {
+   "text": "Just for the heck.",
+   "start": 222.48,
+   "end": 223.64
+  },
+  {
+   "text": "When I went to school, I was taught 68,000 assembler, COBOL, and Pascal.",
+   "start": 223.64,
+   "end": 230.39
+  },
+  {
+   "text": "None of these languages are being used anymore.",
+   "start": 231.61,
+   "end": 234.03
+  },
+  {
+   "text": "And in the 60s, we certainly got compilers, and it didn't really matter anymore what kind of assembly those compilers spit out.",
+   "start": 236.0,
+   "end": 245.92
+  },
+  {
+   "text": "However, by learning assembly, I knew, I learned how that loop in Pascal actually translated into machine code.",
+   "start": 246.41,
+   "end": 257.15
+  },
+  {
+   "text": "And so that was important to me.",
+   "start": 257.15,
+   "end": 261.25
+  },
+  {
+   "text": "And over time, you know, compilers became the highest level of abstractions that most developers needed.",
+   "start": 261.25,
+   "end": 266.98
+  },
+  {
+   "text": "In the 70s, suddenly, structured programming became popular, yeah?",
+   "start": 268.44,
+   "end": 274.7
+  },
+  {
+   "text": "We're moving towards that.",
+   "start": 275.28,
+   "end": 276.56
+  },
+  {
+   "text": "Compilers from Bell Labs and Berkeley, they supported this shift.",
+   "start": 276.56,
+   "end": 281.16
+  },
+  {
+   "text": "They give developers a clearer control over flow and help them escape the chaos of unstructured code.",
+   "start": 281.16,
+   "end": 289.08
+  },
+  {
+   "text": "And then a few years later, Bjarne Stroustrup started exploring how to model real-world concepts directly into coding, objects and classes.",
+   "start": 289.08,
+   "end": 301.67
+  },
+  {
+   "text": "And that became C++ and helped shape object-oriented programming.",
+   "start": 301.67,
+   "end": 305.59
+  },
+  {
+   "text": "In the late 1990s, Amazon was still running as a monolith.",
+   "start": 305.59,
+   "end": 314.1
+  },
+  {
+   "text": "In 1998, and this is a famous moment, yeah, the growth accelerated to such a point that the team began breaking off pieces of this monolith into services.",
+   "start": 314.1,
+   "end": 328.3
+  },
+  {
+   "text": "And each service had ownership of their servers, had their own interface, and they completely changed how developers worked.",
+   "start": 328.82,
+   "end": 337.34
+  },
+  {
+   "text": "They moved faster, they became independent of other teams.",
+   "start": 337.34,
+   "end": 341.7
+  },
+  {
+   "text": "They owned their systems end to end.",
+   "start": 341.7,
+   "end": 345.12
+  },
+  {
+   "text": "And over time, the industry at large became adopting these kind of practices as a practical model for building and operating large-scale distributed systems.",
+   "start": 345.87,
+   "end": 358.17
+  }
+ ]
+}
