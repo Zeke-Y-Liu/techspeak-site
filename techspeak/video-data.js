@@ -675,6 +675,353 @@ const VIDEOS = [
     ]
   },
   {
+    "id": "kaiming-neurips-2025",
+    "title": "NeurIPS 2025 Test of Time 颁奖演讲：目标检测简史（节选）",
+    "speaker": "何恺明 Kaiming He",
+    "platform": "bilibili",
+    "sourceUrl": "https://www.bilibili.com/video/BV1XL2VBkEdo",
+    "published": "2025-12-03",
+    "type": "talk",
+    "level": 2,
+    "tags": [
+      "Kaiming He",
+      "计算机视觉",
+      "目标检测"
+    ],
+    "desc": "\"Faster R-CNN\" 获 NeurIPS 2025 时间考验奖（Test of Time Award），唯一到场的合著者何恺明代四位作者登台，以《目标检测简史》为题回望技术演进：从 1996 年他读过的第一篇计算机视觉论文（用神经网络做人脸检测），到 SIFT、HOG、DPM 手工特征时代的巅峰，直至深度学习复兴前夜。",
+    "focus": "跟读学者开场与学术叙事语流：Kaiming He 清晰沉稳的口语（语速适中易跟读），\"Welcome to the talk, everyone\" 开场与自我介绍句式，\"test of time\"、\"object detection\"、\"bounding box\"、\"handcrafted\" 等计算机视觉高频术语，以及 \"Surprisingly…\" 排比叙事节奏。",
+    "wpmTarget": 170,
+    "durationSec": 418,
+    "audio": "media/kaiming-neurips-2025.mp3",
+    "sentences": [
+      {
+        "text": "Welcome to the talk, everyone.",
+        "start": 0.26,
+        "end": 1.92
+      },
+      {
+        "text": "My name is Kaiming He, and I'm doing this presentation on behalf of my dear friends and co-authors.",
+        "start": 2.72,
+        "end": 9.54
+      },
+      {
+        "text": "Shaoqing Ren, Ross Girshick, and Jian Sun.",
+        "start": 10.24,
+        "end": 14.04
+      },
+      {
+        "text": "I'm doing this presentation just partially because I'm the only person who can make it here.",
+        "start": 15.72,
+        "end": 21.14
+      },
+      {
+        "text": "Okay, so this is the title of today's presentation, A Brief History of Visual Object Detection.",
+        "start": 23.38,
+        "end": 28.3
+      },
+      {
+        "text": "So why I decided to take this title?",
+        "start": 29.09,
+        "end": 33.03
+      },
+      {
+        "text": "Because I feel it is difficult to talk about a work that is 10 years ago.",
+        "start": 35,
+        "end": 38.42
+      },
+      {
+        "text": "I need to set up a context correctly. And then when I started to think about the context, I need to talk about the context of the context and so forth, so and so forth.",
+        "start": 38.56,
+        "end": 49.03
+      },
+      {
+        "text": "And then I decided to talk about the history of object detection, not just the paper in itself.",
+        "start": 49.13,
+        "end": 55.12
+      },
+      {
+        "text": "Let's see how it goes.",
+        "start": 56.08,
+        "end": 57.04
+      },
+      {
+        "text": "So first of all, what is object detection?",
+        "start": 57.04,
+        "end": 60.24
+      },
+      {
+        "text": "Or what is object detection in computer vision?",
+        "start": 60.3,
+        "end": 61.72
+      },
+      {
+        "text": "So conceptually, it's a very simple task for human beings.",
+        "start": 62.79,
+        "end": 67.07
+      },
+      {
+        "text": "But it has been very challenging in computer vision for many decades.",
+        "start": 68.3,
+        "end": 73.06
+      },
+      {
+        "text": "So the task is about recognizing the objects and localizing them simultaneously.",
+        "start": 74.1,
+        "end": 79.2
+      },
+      {
+        "text": "So usually, their localization is represented by a bounding box.",
+        "start": 80.06,
+        "end": 84
+      },
+      {
+        "text": "And the recognition is represented by some confidence of a class category.",
+        "start": 84.42,
+        "end": 89.08
+      },
+      {
+        "text": "So it's difficult to talk about history while we need to stop somewhere.",
+        "start": 92.15,
+        "end": 96.82
+      },
+      {
+        "text": "So I decided to set the stop sign 30 years ago.",
+        "start": 97.36,
+        "end": 101.76
+      },
+      {
+        "text": "So I will start from this paper.",
+        "start": 103.05,
+        "end": 104.61
+      },
+      {
+        "text": "Interestingly, this is the first computer vision paper I have ever read.",
+        "start": 104.99,
+        "end": 109.91
+      },
+      {
+        "text": "Surprisingly, this paper was published in CVPR 1996.",
+        "start": 110.78,
+        "end": 114.28
+      },
+      {
+        "text": "Surprisingly, this paper used neural networks, which is not popular at that time.",
+        "start": 116.39,
+        "end": 121.87
+      },
+      {
+        "text": "And also surprisingly, it looks like it works pretty good.",
+        "start": 122.7,
+        "end": 126.3
+      },
+      {
+        "text": "And again, surprisingly, it won a test of time award ten years after that.",
+        "start": 127.02,
+        "end": 130.88
+      },
+      {
+        "text": "So I read this paper in 2007 when I was an undergrad.",
+        "start": 132.35,
+        "end": 136.55
+      },
+      {
+        "text": "I spent my entire semester trying to reproduce it.",
+        "start": 137.94,
+        "end": 142.38
+      },
+      {
+        "text": "Then I got stuck because I realized that I spent the entire summer just reproducing how backpropagation was done with the tanh activation function.",
+        "start": 143.93,
+        "end": 155.87
+      },
+      {
+        "text": "I just want to give you some idea of how difficult things were at that time.",
+        "start": 157.7,
+        "end": 161.74
+      },
+      {
+        "text": "Interestingly, even though that paper has some promising signal of using neural networks at that time, the community of computer vision deviates from the direction of using neural networks.",
+        "start": 165.44,
+        "end": 178.22
+      },
+      {
+        "text": "So surprisingly, at that time, some other methods are more popular.",
+        "start": 178.22,
+        "end": 185.36
+      },
+      {
+        "text": "For example, just one year after the previous paper.",
+        "start": 185.92,
+        "end": 189.7
+      },
+      {
+        "text": "People started to use support vector machines or SVM for the same face detection task.",
+        "start": 190.24,
+        "end": 195.62
+      },
+      {
+        "text": "Well, at that time, support vector machines are very popular.",
+        "start": 198.1,
+        "end": 201.9
+      },
+      {
+        "text": "They are kind of the most powerful machine learning tools that we can use in computer vision.",
+        "start": 201.92,
+        "end": 206.32
+      },
+      {
+        "text": "Interestingly, this paper won another test-of-time award 10 years later.",
+        "start": 208.98,
+        "end": 213.64
+      },
+      {
+        "text": "Then the computer vision community started to look at their hand-engineering features for the usage of any machine learning classifier, such as an SVM or a boosting classifier.",
+        "start": 216.67,
+        "end": 232.51
+      },
+      {
+        "text": "At that time, one of the most successful framework is called the Viola Jones algorithm.",
+        "start": 233.28,
+        "end": 238.64
+      },
+      {
+        "text": "And in today's world, this is kind of a convolutional kernel with handcrafted weights.",
+        "start": 239.2,
+        "end": 246.62
+      },
+      {
+        "text": "The weights are very simple. Half of them are black and the other half of them are white.",
+        "start": 247.24,
+        "end": 252.38
+      },
+      {
+        "text": "The kernels may have different resolutions and so on and so forth.",
+        "start": 253.06,
+        "end": 256.88
+      },
+      {
+        "text": "While this feature looks very simple, it turns out that this method works very well in computer vision.",
+        "start": 258.96,
+        "end": 264.16
+      },
+      {
+        "text": "It has been kind of a golden baseline for many years in face detection and many other tasks.",
+        "start": 265.32,
+        "end": 271.42
+      },
+      {
+        "text": "Then the computer vision, at almost the same time, started to look deeper into the design of handcrafted features.",
+        "start": 273.51,
+        "end": 280.51
+      },
+      {
+        "text": "And these are two of the most successful and most widely used features in the vision community.",
+        "start": 281.29,
+        "end": 286.31
+      },
+      {
+        "text": "So on the left, it is SIFT, which is short for Scale Invariant Feature Transform.",
+        "start": 286.93,
+        "end": 291.57
+      },
+      {
+        "text": "And on the right, it is HOG, which is short for Histogram of Gradients.",
+        "start": 292.45,
+        "end": 299.24
+      },
+      {
+        "text": "Conceptually, these two features are kind of orientation gradients.",
+        "start": 299.92,
+        "end": 303.9
+      },
+      {
+        "text": "They would be slightly higher level than some other features at that time, such as Edges or their Viola Jones features.",
+        "start": 303.96,
+        "end": 316.47
+      },
+      {
+        "text": "So very quickly in computer vision, these features became very popular and very powerful.",
+        "start": 317.17,
+        "end": 321.55
+      },
+      {
+        "text": "Then people start to build more powerful classifier on top of these features.",
+        "start": 321.55,
+        "end": 328.14
+      },
+      {
+        "text": "And surprisingly, some of the simplest classifier works the best.",
+        "start": 328.72,
+        "end": 331.84
+      },
+      {
+        "text": "So this is a work from 2003.",
+        "start": 332.86,
+        "end": 336.4
+      },
+      {
+        "text": "Interestingly, the paper title is called Video Google.",
+        "start": 337.12,
+        "end": 340.08
+      },
+      {
+        "text": "But conceptually, the core idea is actually a bag of words, or bag of visual words.",
+        "start": 340.7,
+        "end": 347.22
+      },
+      {
+        "text": "So in today's terminology, you can understand this as kind of global pooling or average pooling.",
+        "start": 347.74,
+        "end": 354.7
+      },
+      {
+        "text": "That's what our community can do at that time.",
+        "start": 356.52,
+        "end": 359.94
+      },
+      {
+        "text": "Then people started to get a little bit further after that.",
+        "start": 362.22,
+        "end": 366.46
+      },
+      {
+        "text": "So instead of using a global or a very large pooling window.",
+        "start": 367.02,
+        "end": 371.66
+      },
+      {
+        "text": "People started to look at something that is called pyramids in computer vision, which is kind of multi-scale representation.",
+        "start": 372.16,
+        "end": 379.46
+      },
+      {
+        "text": "So there are two very related and very powerful methods published at that time.",
+        "start": 379.46,
+        "end": 386.04
+      },
+      {
+        "text": "So one is called Pyramid Match Kernel, and the other is called Spatial Pyramid Matching.",
+        "start": 386.66,
+        "end": 392.32
+      },
+      {
+        "text": "Interestingly, these works all won some Test of Time awards 10 years after they were published.",
+        "start": 393.32,
+        "end": 398.26
+      },
+      {
+        "text": "And then the visual community started to build some higher-level, slightly higher-level representations than these handcrafted representations.",
+        "start": 400.98,
+        "end": 410.82
+      },
+      {
+        "text": "So one of the most powerful methods at that time is called Deformable Parts Models or DPM in short.",
+        "start": 411.78,
+        "end": 417.84
+      }
+    ]
+  },
+  {
     "id": "musk-roadster-event-2026",
     "title": "特斯拉 Roadster 发布会演讲（技术讲解节选）",
     "speaker": "埃隆·马斯克 Elon Musk",
