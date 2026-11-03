@@ -5,6 +5,358 @@
  * ============================================================ */
 const VIDEOS = [
   {
+    "id": "hinton-godel-lecture-2026",
+    "title": "维也纳哥德尔讲座 2026：AI 和我们相似吗？（节选）",
+    "speaker": "杰弗里·辛顿 Geoffrey Hinton",
+    "platform": "bilibili",
+    "sourceUrl": "https://www.bilibili.com/video/BV1spHA66EJ9",
+    "published": "2026-10-23",
+    "type": "keynote",
+    "level": 3,
+    "tags": [
+      "Geoffrey Hinton",
+      "人工智能",
+      "诺奖得主"
+    ],
+    "desc": "诺贝尔物理学奖得主、\"AI 教父\"杰弗里·辛顿在维也纳工业大学 2026 年度哥德尔讲座（Vienna Gödel Lecture）节选：以个人视角梳理 AI 发展史的两种范式，并直观展示大模型理解句子时的内部过程。",
+    "focus": "跟读学术讲座语流：Hinton 英式口音的 \"a very brief and very biased history of AI\" 开场、logic-inspired 与 learning-inspired 两种范式的论证节奏，以及面向公众的类比讲解语气。",
+    "wpmTarget": 210,
+    "durationSec": 414.5,
+    "audio": "media/hinton-godel-lecture-2026.mp3",
+    "sentences": [
+      {
+        "text": "Okay, thank you for the introduction and thank you for inviting me.",
+        "start": 0,
+        "end": 3.38
+      },
+      {
+        "text": "I'm going to give you a very brief and very biased history of AI.",
+        "start": 4.03,
+        "end": 7.53
+      },
+      {
+        "text": "So since the beginning of AI, there were two paradigms.",
+        "start": 8.84,
+        "end": 11.72
+      },
+      {
+        "text": "There was the logic-inspired approach, which thought the essence of intelligence was reasoning, and reasoning was going to be done by using symbolic rules to manipulate symbolic expressions.",
+        "start": 12.06,
+        "end": 23.72
+      },
+      {
+        "text": "Just as it's done in logic, and that things like learning can wait until we understand how we do reasoning and how we represent knowledge.",
+        "start": 23.72,
+        "end": 31.84
+      },
+      {
+        "text": "First, we have to figure out what is this symbolic language in which knowledge is represented, how do we do reasoning, and then we can worry about learning later.",
+        "start": 32.1,
+        "end": 38.78
+      },
+      {
+        "text": "That was their approach, and they were dominant during the last century and the early part of this century.",
+        "start": 39.36,
+        "end": 44.76
+      },
+      {
+        "text": "Then there was a biologically inspired approach where the idea was the essence of intelligence is actually learning the strengths of connections in a neural network.",
+        "start": 45.83,
+        "end": 54.37
+      },
+      {
+        "text": "Reasoning can wait until later.",
+        "start": 56.56,
+        "end": 57.96
+      },
+      {
+        "text": "First, we have to understand how learning works, and then we'll understand other things later.",
+        "start": 57.96,
+        "end": 62.1
+      },
+      {
+        "text": "This was based on the idea that things like pigeons are quite smart in their own way.",
+        "start": 63.02,
+        "end": 69.16
+      },
+      {
+        "text": "They're good at things like perception, they're good at things like flying through forests.",
+        "start": 69.16,
+        "end": 72.52
+      },
+      {
+        "text": "And they don't do reasoning, or as far as we know, they don't do much reasoning, and they probably don't use logic.",
+        "start": 74.98,
+        "end": 80.02
+      },
+      {
+        "text": "So really from a biological perspective, reasoning comes very late, and it's sort of silly to base your model of intelligence on that.",
+        "start": 81.14,
+        "end": 87.84
+      },
+      {
+        "text": "Now, one thing I should say before I go on is there were two people from the 1950s who actually believed in the neural network approach.",
+        "start": 91.83,
+        "end": 100.69
+      },
+      {
+        "text": "They were both very good logicians.",
+        "start": 101.19,
+        "end": 102.93
+      },
+      {
+        "text": "It was John von Neumann and Alan Turing.",
+        "start": 102.93,
+        "end": 105.63
+      },
+      {
+        "text": "So you couldn't really accuse them of not understanding logic like me.",
+        "start": 105.99,
+        "end": 109.51
+      },
+      {
+        "text": "They unfortunately both died young, and I think if they had survived, the whole history of AI might have been very different.",
+        "start": 111.3,
+        "end": 117.12
+      },
+      {
+        "text": "Turing was sort of studying how you could learn neural networks using reinforcement learning.",
+        "start": 117.82,
+        "end": 122.84
+      },
+      {
+        "text": "So I'll start by talking about the meaning of a word.",
+        "start": 129.4,
+        "end": 135.04
+      },
+      {
+        "text": "So within the symbolic AI paradigm, the idea was that the meaning of a word comes from how it interacts with other words in propositions or in sentences.",
+        "start": 135.6,
+        "end": 145.14
+      },
+      {
+        "text": "So the meaning isn't a sort of thing you could put your hands on.",
+        "start": 145.58,
+        "end": 148.62
+      },
+      {
+        "text": "It's implicit in how it co-occurs with other words.",
+        "start": 148.62,
+        "end": 152.5
+      },
+      {
+        "text": "And probably to capture meaning, you'd need something like a relational graph.",
+        "start": 152.9,
+        "end": 156.32
+      },
+      {
+        "text": "So that was a symbolic view.",
+        "start": 158.04,
+        "end": 159.42
+      },
+      {
+        "text": "There was a view in psychology in the 1930s, which was very different, which was that the meaning of a word is just a big set of semantic and maybe syntactic features.",
+        "start": 159.86,
+        "end": 169.14
+      },
+      {
+        "text": "So you have a large set of features. You activate a subset of them to capture the meaning of a word.",
+        "start": 169.58,
+        "end": 174.94
+      },
+      {
+        "text": "So for the word cat, you'd activate features that say it's a predator, it's a pet, it's aloof, it's got whiskers, it's about the size of a breadbox, things like that.",
+        "start": 174.94,
+        "end": 186.49
+      },
+      {
+        "text": "To represent a dog, you'd activate a fairly similar bunch of features, but obviously different in some respects.",
+        "start": 186.77,
+        "end": 192.35
+      },
+      {
+        "text": "That theory was very good at capturing similarities of meaning.",
+        "start": 193.9,
+        "end": 197.12
+      },
+      {
+        "text": "So cat and dog would have fairly similar feature vectors.",
+        "start": 197.54,
+        "end": 200.04
+      },
+      {
+        "text": "It was also quite good at capturing analogies.",
+        "start": 200.62,
+        "end": 203.06
+      },
+      {
+        "text": "So for example, for most men in our culture, not necessarily for women, it turns out.",
+        "start": 203.06,
+        "end": 210.72
+      },
+      {
+        "text": "The feature vector that you use for cat is more similar to the feature vector you use for woman than the feature vector you use for man.",
+        "start": 211.72,
+        "end": 219.62
+      },
+      {
+        "text": "And vice versa, the feature vector for dog is more similar to the feature vector for man than it is for woman.",
+        "start": 219.9,
+        "end": 225.2
+      },
+      {
+        "text": "Now, being a man, I thought that was obvious.",
+        "start": 225.62,
+        "end": 227.68
+      },
+      {
+        "text": "That's obvious to everybody. Turns out it's not.",
+        "start": 227.68,
+        "end": 229.58
+      },
+      {
+        "text": "Quite a few women don't see that as obvious at all.",
+        "start": 230.14,
+        "end": 232.4
+      },
+      {
+        "text": "That was a revelation to me.",
+        "start": 233.99,
+        "end": 235.63
+      },
+      {
+        "text": "But that makes these feature vectors very good at doing analogies.",
+        "start": 235.89,
+        "end": 238.99
+      },
+      {
+        "text": "Back in 1985, it occurred to me that these two different theories of meaning, one that is implicit in how it co-occurs occur with other words and the other that is just a big bunch of activations of features.",
+        "start": 244.13,
+        "end": 256.55
+      },
+      {
+        "text": "They're not necessarily incompatible.",
+        "start": 257.17,
+        "end": 259.65
+      },
+      {
+        "text": "They may be just two different sides of the same coin and with the back propagation learning algorithm, which I'm not going to explain, you could actually convert between these two representations.",
+        "start": 259.91,
+        "end": 270.89
+      },
+      {
+        "text": "So what you would do is you train up a neural net on strings of words and you train the neural net to convert each word into a set of features.",
+        "start": 273.58,
+        "end": 285.33
+      },
+      {
+        "text": "And then to make those features interact and for those interactions to predict the features of the next word.",
+        "start": 285.89,
+        "end": 292.85
+      },
+      {
+        "text": "And once you know the features of the next word, you can make guesses about what the next word might be.",
+        "start": 292.85,
+        "end": 296.77
+      },
+      {
+        "text": "So you can train a neural net and as it's learning, it learns what all these features should be.",
+        "start": 297.75,
+        "end": 303.15
+      },
+      {
+        "text": "It had always been a problem for psychologists to explain where all these features came from.",
+        "start": 303.43,
+        "end": 307.29
+      },
+      {
+        "text": "But with back propagation, you can take a string of words, you can try and predict the next word.",
+        "start": 308.42,
+        "end": 312.58
+      },
+      {
+        "text": "And I took very simple sets of words, just three word strings and predicting the third word, and showed that actually back propagation could do this.",
+        "start": 312.58,
+        "end": 323.4
+      },
+      {
+        "text": "It could convert words into features.",
+        "start": 323.4,
+        "end": 325.1
+      },
+      {
+        "text": "So it could also convert features into words in the sense that you could generate new strings of words by just progressively predicting the next word.",
+        "start": 327.93,
+        "end": 338.28
+      },
+      {
+        "text": "You start with one or two words, you predict the next word, okay, you accept that, then you predict the word after that.",
+        "start": 338.52,
+        "end": 344.18
+      },
+      {
+        "text": "So you can get back from these features to strings of words again.",
+        "start": 344.18,
+        "end": 347.8
+      },
+      {
+        "text": "So with these neural nets, you can convert both ways.",
+        "start": 348.55,
+        "end": 351.17
+      },
+      {
+        "text": "You convert strings of words into feature vectors for words and you can convert feature vectors for words back into strings of words.",
+        "start": 351.17,
+        "end": 357.68
+      },
+      {
+        "text": "And that meant that the relational knowledge you have doesn't reside in a relational graph, as symbolic people thought.",
+        "start": 358.46,
+        "end": 366.64
+      },
+      {
+        "text": "It resides in the way all these features interact.",
+        "start": 367.08,
+        "end": 370.16
+      },
+      {
+        "text": "You don't have static stored propositions.",
+        "start": 370.66,
+        "end": 372.82
+      },
+      {
+        "text": "There are no propositions in your head when you want one, when you generate one.",
+        "start": 372.82,
+        "end": 376.04
+      },
+      {
+        "text": "What you've got in your head is knowledge about how to convert words into features and knowledge about how two features should interact.",
+        "start": 376.36,
+        "end": 382.18
+      },
+      {
+        "text": "So over the next 30 years, that was in 1985, about 10 years later, Yoshua Bengio, computers were faster.",
+        "start": 385.68,
+        "end": 392.68
+      },
+      {
+        "text": "And Yoshua Bengio in Montreal showed that instead of just taking a toy example like I'd taken, you could take real natural language and predict the next word.",
+        "start": 392.68,
+        "end": 402.76
+      },
+      {
+        "text": "And you could predict it about as well as the best existing models.",
+        "start": 402.76,
+        "end": 406.24
+      },
+      {
+        "text": "The best existing models used huge tables of phrases and counted how often different phrases occurred.",
+        "start": 406.64,
+        "end": 412.52
+      }
+    ]
+  },
+  {
     "id": "jensen-gtc-berlin-2026",
     "title": "GTC 柏林 2026 主题演讲（开场节选）",
     "speaker": "黄仁勋 Jensen Huang",
