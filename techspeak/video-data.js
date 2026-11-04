@@ -675,6 +675,773 @@ const VIDEOS = [
     ]
   },
   {
+    "id": "jobs-stanford-2005",
+    "title": "乔布斯斯坦福大学毕业演讲：求知若渴，虚怀若愚 Stay Hungry, Stay Foolish（2005 全篇）",
+    "speaker": "Steve Jobs 史蒂夫·乔布斯（Apple 联合创始人）",
+    "platform": "bilibili",
+    "sourceUrl": "https://www.bilibili.com/video/BV1T2YLeYE3g",
+    "published": "2005-06-12",
+    "type": "keynote",
+    "level": 2,
+    "tags": [
+      "Steve Jobs",
+      "Stanford",
+      "Stay Hungry Stay Foolish"
+    ],
+    "desc": "公众认知中乔布斯最著名的一次演讲：2005-06-12 斯坦福大学毕业典礼致辞，全篇以三个故事串起：connecting the dots（点滴串联：辍学与书法课如何塑造 Mac 字体）、love and loss（爱与失去：被逐出 Apple 与创办 NeXT/Pixar）、death（死亡：癌症确诊与向死而生），以 The Whole Earth Catalog 告别语 \"Stay Hungry, Stay Foolish\" 收尾，被视为毕业演讲史上的巅峰之作。",
+    "focus": "跟读叙事节奏与金句重音：\"You can't connect the dots looking forward; you can only connect them looking backwards.\"、\"Your time is limited, so don't waste it living someone else's life.\"、结尾三连 \"Stay Hungry. Stay Foolish.\"；术语 connecting the dots / calligraphy / serif / typography / dogma / The Whole Earth Catalog / pancreatic cancer。",
+    "wpmTarget": 170,
+    "durationSec": 852,
+    "audio": "media/jobs-stanford-2005.mp3",
+    "sentences": [
+      {
+        "text": "Thank you.",
+        "start": 0.03,
+        "end": 0.97
+      },
+      {
+        "text": "I'm honored to be with you today for your commencement from one of the finest universities in the world.",
+        "start": 5.91,
+        "end": 11.19
+      },
+      {
+        "text": "Truth be told, I never graduated from college, and this is the closest I've ever gotten to a college graduation.",
+        "start": 14.71,
+        "end": 24.51
+      },
+      {
+        "text": "Today I want to tell you three stories from my life.",
+        "start": 26.9,
+        "end": 29.9
+      },
+      {
+        "text": "That's it. No big deal. Just three stories.",
+        "start": 30.04,
+        "end": 33.42
+      },
+      {
+        "text": "The first story is about connecting the dots.",
+        "start": 33.42,
+        "end": 37.95
+      },
+      {
+        "text": "I dropped out of Reed College after the first six months, but then stayed around as a drop-in for another 18 months or so before I really quit.",
+        "start": 39.55,
+        "end": 47.15
+      },
+      {
+        "text": "So why did I drop out?",
+        "start": 47.15,
+        "end": 49.6
+      },
+      {
+        "text": "It started before I was born.",
+        "start": 51.35,
+        "end": 52.89
+      },
+      {
+        "text": "My biological mother was a young, unwed graduate student, and she decided to put me up for adoption.",
+        "start": 52.89,
+        "end": 60.15
+      },
+      {
+        "text": "She felt very strongly that I should be adopted by college graduates.",
+        "start": 60.97,
+        "end": 64.87
+      },
+      {
+        "text": "So everything was all set for me to be adopted at birth by a lawyer and his wife.",
+        "start": 64.87,
+        "end": 69.65
+      },
+      {
+        "text": "Except that when I popped out they decided at the last minute that they really wanted a girl.",
+        "start": 70.55,
+        "end": 75.47
+      },
+      {
+        "text": "So my parents, who were on a waiting list, got a call in the middle of the night asking, \"We've got an unexpected baby boy; do you want him?\"",
+        "start": 75.47,
+        "end": 85.44
+      },
+      {
+        "text": "They said, \"Of course.\"",
+        "start": 86.3,
+        "end": 88
+      },
+      {
+        "text": "My biological mother found out later that my mother had never graduated from college and that my father had never graduated from high school.",
+        "start": 88,
+        "end": 97.29
+      },
+      {
+        "text": "She refused to sign the final adoption papers.",
+        "start": 97.29,
+        "end": 100.84
+      },
+      {
+        "text": "She only relented a few months later when my parents promised that I would go to college.",
+        "start": 102.02,
+        "end": 107.38
+      },
+      {
+        "text": "This was the start in my life, and 17 years later I did go to college.",
+        "start": 107.96,
+        "end": 115.74
+      },
+      {
+        "text": "But I naively chose a college that was almost as expensive as Stanford, and all of my working class parents' savings were being spent on my college tuition.",
+        "start": 115.74,
+        "end": 125.48
+      },
+      {
+        "text": "After six months, I couldn't see the value in it.",
+        "start": 126.2,
+        "end": 129.26
+      },
+      {
+        "text": "I had no idea what I wanted to do with my life and no idea how college was going to help me figure it out.",
+        "start": 129.26,
+        "end": 135.24
+      },
+      {
+        "text": "And here I was, spending all the money my parents had saved their entire life.",
+        "start": 135.52,
+        "end": 139.84
+      },
+      {
+        "text": "So I decided to drop out and trust that it would all work out okay.",
+        "start": 140.92,
+        "end": 145.64
+      },
+      {
+        "text": "It was pretty scary at the time, but looking back it was one of the best decisions I ever made.",
+        "start": 146.23,
+        "end": 151.31
+      },
+      {
+        "text": "The minute I dropped out I could stop taking the required classes that didn't interest me, and begin dropping in on the ones that looked far more interesting.",
+        "start": 152.69,
+        "end": 162.33
+      },
+      {
+        "text": "It wasn't all romantic.",
+        "start": 162.33,
+        "end": 164.98
+      },
+      {
+        "text": "I didn't have a dorm room, so I slept on the floor in friends' rooms.",
+        "start": 165.14,
+        "end": 168.78
+      },
+      {
+        "text": "I returned Coke bottles for the five cent deposits to buy food with, and I would walk the seven miles across town every Sunday night to get one good meal a week at the Hare Krishna temple.",
+        "start": 168.78,
+        "end": 180.08
+      },
+      {
+        "text": "I loved it.",
+        "start": 180.69,
+        "end": 182.01
+      },
+      {
+        "text": "And much of what I stumbled into by following my curiosity and intuition turned out to be priceless later on.",
+        "start": 182.01,
+        "end": 188.56
+      },
+      {
+        "text": "Let me give you one example.",
+        "start": 188.56,
+        "end": 190.38
+      },
+      {
+        "text": "Reed College at that time offered perhaps the best calligraphy instruction in the country.",
+        "start": 190.38,
+        "end": 196.73
+      },
+      {
+        "text": "Throughout the campus, every poster, every label on every drawer was beautifully hand lettered.",
+        "start": 197.09,
+        "end": 203.23
+      },
+      {
+        "text": "Because I had dropped out and didn't have to take the normal classes, I decided to take a calligraphy class to learn how to do this.",
+        "start": 203.95,
+        "end": 211.46
+      },
+      {
+        "text": "I learned about serif and sans serif typefaces, about varying the amount of space between different letter combinations, about what makes great typography great.",
+        "start": 211.46,
+        "end": 221.14
+      },
+      {
+        "text": "It was beautiful, historical, artistically subtle in a way that science can't capture, and I found it fascinating.",
+        "start": 221.94,
+        "end": 229.77
+      },
+      {
+        "text": "None of this had even a hope of any practical application in my life.",
+        "start": 230.74,
+        "end": 235.24
+      },
+      {
+        "text": "But ten years later, when we were designing the first Macintosh computer, it all came back to me.",
+        "start": 235.24,
+        "end": 242.01
+      },
+      {
+        "text": "And we designed it all into the Mac.",
+        "start": 242.01,
+        "end": 244.63
+      },
+      {
+        "text": "It was the first computer with beautiful typography.",
+        "start": 244.63,
+        "end": 247.57
+      },
+      {
+        "text": "If I had never dropped in on that single course in college, the Mac would have never had multiple typefaces or proportionally spaced fonts, and since Windows just copied the Mac, it's likely that no personal computer would have them.",
+        "start": 247.57,
+        "end": 260.93
+      },
+      {
+        "text": "If I had never dropped out, I would have never dropped in on this calligraphy class, and personal computers might not have the wonderful typography that they do.",
+        "start": 268.56,
+        "end": 276.57
+      },
+      {
+        "text": "Of course it was impossible to connect the dots looking forward when I was in college.",
+        "start": 276.57,
+        "end": 281.39
+      },
+      {
+        "text": "But it was very, very clear looking backwards ten years later.",
+        "start": 281.39,
+        "end": 285.29
+      },
+      {
+        "text": "Again, you can't connect the dots looking forward; you can only connect them looking backwards.",
+        "start": 285.75,
+        "end": 291.11
+      },
+      {
+        "text": "So you have to trust that the dots will somehow connect in your future.",
+        "start": 291.11,
+        "end": 295.11
+      },
+      {
+        "text": "You have to trust in something: your gut, destiny, life, karma, whatever.",
+        "start": 295.11,
+        "end": 300.05
+      },
+      {
+        "text": "Because believing that the dots will connect down the road will give you the confidence to follow your heart, even when it leads you off the well-worn path, and that will make all the difference.",
+        "start": 300.43,
+        "end": 311.19
+      },
+      {
+        "text": "My second story is about love and loss.",
+        "start": 317.19,
+        "end": 320.89
+      },
+      {
+        "text": "I was lucky.",
+        "start": 322.4,
+        "end": 323.56
+      },
+      {
+        "text": "I found what I loved to do early in life.",
+        "start": 324.02,
+        "end": 326.6
+      },
+      {
+        "text": "Woz and I started Apple in my parents' garage when I was 20.",
+        "start": 326.6,
+        "end": 330.12
+      },
+      {
+        "text": "We worked hard, and in 10 years Apple had grown from just the two of us in a garage into a two billion dollar company with over 4,000 employees.",
+        "start": 330.12,
+        "end": 338.3
+      },
+      {
+        "text": "We just released our finest creation, the Macintosh, a year earlier, and I just turned 30.",
+        "start": 338.3,
+        "end": 343.86
+      },
+      {
+        "text": "And then I got fired.",
+        "start": 343.86,
+        "end": 346.2
+      },
+      {
+        "text": "How can you get fired from a company you started?",
+        "start": 346.2,
+        "end": 349.98
+      },
+      {
+        "text": "Well, as Apple grew we hired someone who I thought was very talented to run the company with me, and for the first year or so things went well.",
+        "start": 351.48,
+        "end": 359.54
+      },
+      {
+        "text": "But then our visions of the future began to diverge, and eventually we had a falling out.",
+        "start": 359.54,
+        "end": 363.96
+      },
+      {
+        "text": "When we did, our Board of Directors sided with him.",
+        "start": 363.96,
+        "end": 367.26
+      },
+      {
+        "text": "And so at 30 I was out.",
+        "start": 367.26,
+        "end": 369.58
+      },
+      {
+        "text": "And very publicly out.",
+        "start": 369.58,
+        "end": 371.4
+      },
+      {
+        "text": "What had been the focus of my entire adult life was gone, and it was devastating.",
+        "start": 371.79,
+        "end": 376.09
+      },
+      {
+        "text": "I really didn't know what to do for a few months.",
+        "start": 376.9,
+        "end": 379.16
+      },
+      {
+        "text": "I felt that I had let the previous generation of entrepreneurs down, that I had dropped the baton as it was being passed to me.",
+        "start": 379.56,
+        "end": 386.12
+      },
+      {
+        "text": "I met with David Packard and Bob Noyce and tried to apologize for screwing up so badly.",
+        "start": 386.12,
+        "end": 392.19
+      },
+      {
+        "text": "I was a very public failure, and I even thought about running away from the valley.",
+        "start": 392.82,
+        "end": 396.62
+      },
+      {
+        "text": "But something slowly began to dawn on me.",
+        "start": 396.96,
+        "end": 399.66
+      },
+      {
+        "text": "I still loved what I did.",
+        "start": 400.14,
+        "end": 402.22
+      },
+      {
+        "text": "The turn of events at Apple had not changed that one bit.",
+        "start": 402.22,
+        "end": 406.3
+      },
+      {
+        "text": "I'd been rejected, but I was still in love.",
+        "start": 406.82,
+        "end": 409.52
+      },
+      {
+        "text": "And so I decided to start over.",
+        "start": 409.52,
+        "end": 412.37
+      },
+      {
+        "text": "I didn't see it then, but it turned out that getting fired from Apple was the best thing that could have ever happened to me.",
+        "start": 413.28,
+        "end": 418.96
+      },
+      {
+        "text": "The heaviness of being successful was replaced by the lightness of being a beginner again, less sure about everything.",
+        "start": 418.96,
+        "end": 426.13
+      },
+      {
+        "text": "It freed me to enter one of the most creative periods of my life.",
+        "start": 426.13,
+        "end": 429.58
+      },
+      {
+        "text": "During the next five years, I started a company named NeXT, another company named Pixar, and fell in love with an amazing woman who would become my wife.",
+        "start": 429.58,
+        "end": 437.69
+      },
+      {
+        "text": "Pixar went on to create the world's first computer animated feature film, Toy Story, and is now the most successful animation studio in the world.",
+        "start": 438.23,
+        "end": 446.35
+      },
+      {
+        "text": "In a remarkable turn of events, Apple bought NeXT, I returned to Apple, and the technology we developed at NeXT is at the heart of Apple's current renaissance.",
+        "start": 448.35,
+        "end": 457.88
+      },
+      {
+        "text": "And Laurene and I have a wonderful family together.",
+        "start": 457.88,
+        "end": 461.32
+      },
+      {
+        "text": "I'm pretty sure none of this would have happened if I hadn't been fired from Apple.",
+        "start": 461.32,
+        "end": 466.27
+      },
+      {
+        "text": "It was awful tasting medicine, but I guess the patient needed it.",
+        "start": 466.49,
+        "end": 470.07
+      },
+      {
+        "text": "Sometimes life's going to hit you in the head with a brick.",
+        "start": 471.84,
+        "end": 474.34
+      },
+      {
+        "text": "Don't lose faith.",
+        "start": 474.93,
+        "end": 475.95
+      },
+      {
+        "text": "I'm convinced that the only thing that kept me going was that I loved what I did.",
+        "start": 476.67,
+        "end": 480.51
+      },
+      {
+        "text": "You've got to find what you love.",
+        "start": 480.81,
+        "end": 482.95
+      },
+      {
+        "text": "And that is as true for your work as it is for your lovers.",
+        "start": 482.95,
+        "end": 485.89
+      },
+      {
+        "text": "Your work is gonna fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.",
+        "start": 486.53,
+        "end": 493.35
+      },
+      {
+        "text": "And the only way to do great work is to love what you do.",
+        "start": 493.35,
+        "end": 497.23
+      },
+      {
+        "text": "If you haven't found it yet, keep looking and don't settle.",
+        "start": 497.23,
+        "end": 501.65
+      },
+      {
+        "text": "As with all matters of the heart, you'll know when you find it.",
+        "start": 501.65,
+        "end": 505.59
+      },
+      {
+        "text": "And, like any great relationship, it just gets better and better as the years roll on.",
+        "start": 505.59,
+        "end": 510.51
+      },
+      {
+        "text": "So keep looking. Don't settle.",
+        "start": 510.51,
+        "end": 513.25
+      },
+      {
+        "text": "My third story is about death.",
+        "start": 523.67,
+        "end": 526.58
+      },
+      {
+        "text": "When I was 17, I read a quote that went something like: \"If you live each day as if it was your last, someday you'll most certainly be right.\"",
+        "start": 526.58,
+        "end": 536.48
+      },
+      {
+        "text": "It made an impression on me.",
+        "start": 539.1,
+        "end": 541.02
+      },
+      {
+        "text": "And since then, for the past 33 years, I have looked in the mirror every morning and asked myself: \"If today were the last day of my life, would I want to do what I am about to do today?\"",
+        "start": 541.02,
+        "end": 552.06
+      },
+      {
+        "text": "And whenever the answer has been \"No\" for too many days in a row, I know I need to change something.",
+        "start": 552.06,
+        "end": 558.03
+      },
+      {
+        "text": "Remembering that I'll be dead soon is the most important tool I've ever encountered to help me make the big choices in life.",
+        "start": 559.1,
+        "end": 565.68
+      },
+      {
+        "text": "Because almost everything, all external expectations, all pride, all fear of embarrassment or failure, these things just fall away in the face of death, leaving only what is truly important.",
+        "start": 566.26,
+        "end": 578.72
+      },
+      {
+        "text": "Remembering that you are going to die is the best way I know to avoid the trap of thinking you have something to lose.",
+        "start": 579.36,
+        "end": 586.1
+      },
+      {
+        "text": "You are already naked.",
+        "start": 586.1,
+        "end": 588.08
+      },
+      {
+        "text": "There is no reason not to follow your heart.",
+        "start": 588.54,
+        "end": 591.02
+      },
+      {
+        "text": "About a year ago I was diagnosed with cancer.",
+        "start": 592.22,
+        "end": 595.62
+      },
+      {
+        "text": "I had a scan at 7:30 in the morning, and it clearly showed a tumor on my pancreas.",
+        "start": 595.62,
+        "end": 601.42
+      },
+      {
+        "text": "I didn't even know what a pancreas was.",
+        "start": 601.62,
+        "end": 603.84
+      },
+      {
+        "text": "The doctors told me this was almost certainly a type of cancer that is incurable, and that I should expect to live no longer than three to six months.",
+        "start": 604.4,
+        "end": 613.28
+      },
+      {
+        "text": "My doctor advised me to go home and get my affairs in order, which is doctor's code for prepare to die.",
+        "start": 614.18,
+        "end": 621.56
+      },
+      {
+        "text": "It means to try and tell your kids everything you thought you'd have the next ten years to tell them in just a few months.",
+        "start": 622.22,
+        "end": 629.49
+      },
+      {
+        "text": "It means to make sure everything is buttoned up so that it will be as easy as possible for your family.",
+        "start": 630.26,
+        "end": 635.4
+      },
+      {
+        "text": "It means to say your goodbyes.",
+        "start": 636.02,
+        "end": 637.78
+      },
+      {
+        "text": "I lived with that diagnosis all day.",
+        "start": 639.83,
+        "end": 641.85
+      },
+      {
+        "text": "Later that evening I had a biopsy, where they stuck an endoscope down my throat, through my stomach and into my intestines, put a needle into my pancreas and got a few cells from the tumor.",
+        "start": 642.3,
+        "end": 653.04
+      },
+      {
+        "text": "I was sedated, but my wife, who was there, told me that when they viewed the cells under a microscope the doctors started crying because it turned out to be a very rare form of pancreatic cancer that is curable with surgery.",
+        "start": 653.81,
+        "end": 666.71
+      },
+      {
+        "text": "I had the surgery and, thankfully, I'm fine now.",
+        "start": 667.25,
+        "end": 670.79
+      },
+      {
+        "text": "This was the closest I've been to facing death, and I hope it's the closest I get for a few more decades.",
+        "start": 679.07,
+        "end": 684.6
+      },
+      {
+        "text": "Having lived through it, I can now say this to you with a bit more certainty than when death was a useful but purely intellectual concept.",
+        "start": 684.98,
+        "end": 692.82
+      },
+      {
+        "text": "No one wants to die.",
+        "start": 694.08,
+        "end": 695.98
+      },
+      {
+        "text": "Even people who want to go to heaven don't want to die to get there.",
+        "start": 696.48,
+        "end": 699.96
+      },
+      {
+        "text": "And yet death is the destination we all share.",
+        "start": 700.62,
+        "end": 704.02
+      },
+      {
+        "text": "No one has ever escaped it.",
+        "start": 704.52,
+        "end": 706.24
+      },
+      {
+        "text": "And that is as it should be, because Death is very likely the single best invention of Life.",
+        "start": 706.54,
+        "end": 712.78
+      },
+      {
+        "text": "It's Life's change agent.",
+        "start": 713.4,
+        "end": 714.96
+      },
+      {
+        "text": "It clears out the old to make way for the new.",
+        "start": 714.96,
+        "end": 717.3
+      },
+      {
+        "text": "Right now, the new is you.",
+        "start": 718.13,
+        "end": 720.17
+      },
+      {
+        "text": "But someday not too long from now, you will gradually become the old and be cleared away.",
+        "start": 720.82,
+        "end": 725.9
+      },
+      {
+        "text": "Sorry to be so dramatic, but it is quite true.",
+        "start": 726.77,
+        "end": 729.67
+      },
+      {
+        "text": "Your time is limited, so don't waste it living someone else's life.",
+        "start": 730.88,
+        "end": 735.56
+      },
+      {
+        "text": "Don't be trapped by dogma, which is living with the results of other people's thinking.",
+        "start": 736.27,
+        "end": 740.75
+      },
+      {
+        "text": "Don't let the noise of others' opinions drown out your own inner voice.",
+        "start": 741.2,
+        "end": 745.14
+      },
+      {
+        "text": "And most important, have the courage to follow your heart and intuition.",
+        "start": 745.54,
+        "end": 749.48
+      },
+      {
+        "text": "They somehow already know what you truly want to become.",
+        "start": 749.78,
+        "end": 753.6
+      },
+      {
+        "text": "Everything else is secondary.",
+        "start": 754.12,
+        "end": 756.26
+      },
+      {
+        "text": "When I was young, there was an amazing publication called The Whole Earth Catalog, which was one of the bibles of my generation.",
+        "start": 767.87,
+        "end": 775.95
+      },
+      {
+        "text": "It was created by a fellow named Stewart Brand not far from here in Menlo Park.",
+        "start": 776.42,
+        "end": 780.96
+      },
+      {
+        "text": "And he brought it to life with his poetic touch.",
+        "start": 781.32,
+        "end": 783.66
+      },
+      {
+        "text": "This was in the late 60s, before personal computers and desktop publishing.",
+        "start": 784.42,
+        "end": 788.34
+      },
+      {
+        "text": "So it was all made with typewriters, scissors, and Polaroid cameras.",
+        "start": 788.64,
+        "end": 792.48
+      },
+      {
+        "text": "It was sort of like Google in paperback form, 35 years before Google came along.",
+        "start": 792.82,
+        "end": 797.62
+      },
+      {
+        "text": "It was idealistic, overflowing with neat tools and great notions.",
+        "start": 798.08,
+        "end": 802.66
+      },
+      {
+        "text": "Stewart and his team put out several issues of The Whole Earth Catalog, and then when it had run its course, they put out a final issue.",
+        "start": 803.62,
+        "end": 811.18
+      },
+      {
+        "text": "It was the mid 1970s, and I was your age.",
+        "start": 811.53,
+        "end": 815.2
+      },
+      {
+        "text": "On the back cover of their final issue was a photograph of an early morning country road, the kind you might find yourself hitchhiking on if you were so adventurous.",
+        "start": 816.76,
+        "end": 826.23
+      },
+      {
+        "text": "Beneath it were the words: \"Stay Hungry. Stay Foolish.\"",
+        "start": 827.01,
+        "end": 831.45
+      },
+      {
+        "text": "It was their farewell message as they signed off.",
+        "start": 831.45,
+        "end": 834.71
+      },
+      {
+        "text": "Stay Hungry. Stay Foolish.",
+        "start": 835.24,
+        "end": 837.71
+      },
+      {
+        "text": "And I've always wished that for myself.",
+        "start": 838.18,
+        "end": 840.91
+      },
+      {
+        "text": "And now, as you graduate to begin anew, I wish that for you.",
+        "start": 841.69,
+        "end": 846.72
+      },
+      {
+        "text": "Stay Hungry. Stay Foolish.",
+        "start": 847.16,
+        "end": 849.41
+      },
+      {
+        "text": "Thank you all very much.",
+        "start": 849.99,
+        "end": 851.4
+      }
+    ]
+  },
+  {
     "id": "kaiming-neurips-2025",
     "title": "NeurIPS 2025 Test of Time 颁奖演讲：目标检测简史（节选）",
     "speaker": "何恺明 Kaiming He",
